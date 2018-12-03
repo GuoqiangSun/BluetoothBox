@@ -1,0 +1,42 @@
+ext {
+    def support_library_version = '25.3.1'
+    def butterKnife_version = "8.8.1"
+
+    android = [
+            compileSdkVersion = 25,
+            buildToolsVersion = '25.0.3',
+            applicationId = "com.bazooka.bluetoothbox",
+            minSdkVersion = 15,
+            targetSdkVersion = 22,
+            versionCode = 3,
+            versionName = '1.2'
+    ]
+
+    greendao = [
+            //数据库版本
+            schemaVersion = 3,
+            //设置DaoMaster、DaoSession、Dao包名
+            daoPackage = "com.bazooka.greendao.gen",
+            targetGenDir = "src/main/java"
+    ]
+
+    dependencies = [
+            "appcompat-v7"                  : "com.android.support:appcompat-v7:$support_library_version",
+            "recyclerview-v7"               : "com.android.support:recyclerview-v7:$support_library_version",
+            "percent"                       : "com.android.support:percent:$support_library_version",
+            "design"                        : "com.android.support:design:$support_library_version",
+            "constraint-layout"             : "com.android.support.constraint:constraint-layout:1.0.2",
+            "butterknife"                   : "com.jakewharton:butterknife:$butterKnife_version",
+            "butterknife-compiler"          : "com.jakewharton:butterknife-compiler:$butterKnife_version",
+            "ibluz"                         : "com.actions:ibluz:1.1.6",
+            "BaseRecyclerViewAdapterHelper" : "com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.34",
+            "eventbus"                      : "org.greenrobot:eventbus:3.1.1",
+            "logger"                        : "com.orhanobut:logger:2.1.1",
+            "greendao"                      : "org.greenrobot:greendao:3.2.0",
+            "greendao-generator"            : "org.greenrobot:greendao-generator:3.2.0",
+            "utilcode"                      : "com.blankj:utilcode:1.9.8",
+            "gson"                          : "com.google.code.gson:gson:2.8.2",
+            "WheelPicker"                   : "cn.qqtheme.framework:WheelPicker:1.5.5",
+            "android-gif-drawable"          : "pl.droidsonroids.gif:android-gif-drawable:1.2.10"
+    ]
+}

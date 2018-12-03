@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- simpleRulerView-->
+    <declare-styleable name="simpleRulerView">
+        <attr name="highlightColor" format="color|reference" />
+        <attr name="rulerColor" format="color|reference" />
+        <attr name="textColor" format="color|reference" />
+        <attr name="intervalDistance" format="dimension" />
+        <attr name="intervalValue" format="float" />
+        <attr name="maxValue" format="float" />
+        <attr name="minValue" format="float" />
+        <attr name="textSize" format="dimension" />
+        <attr name="rulerLineWidth" format="dimension" />
+        <attr name="retainLength" format="integer"/>
+    </declare-styleable>
+
+    <declare-styleable name="ColorPickerView">
+        <attr name="paletteSrc" format="reference"/>
+        <attr name="selectorSrc" format="reference"/>
+    </declare-styleable>
+
+
+    <declare-styleable name="color_picker">
+        <!-- 背景圆的半径 -->
+        <attr name="circle_radius" format="dimension" />
+        <!-- 可滑动小球的半径 -->
+        <attr name="center_radius" format="dimension" />
+        <!-- 可滑动小球的颜色 -->
+        <attr name="center_color" format="color" />
+        <!-- 选色小球的图片 -->
+        <attr name="selector" format="reference"/>
+    </declare-styleable>
+    
+    <declare-styleable name="PullUpDragLayout">
+        <!--底部视图-->
+        <attr name="PullUpDrag_BottomView" format="reference"/>
+        <!--内容视图-->
+        <attr name="PullUpDrag_ContentView" format="reference"/>
+        <!--边界高度-->
+        <attr name="PullUpDrag_BottomBorderHeight" format="reference|integer|dimension"/>
+    </declare-styleable>
+
+    <declare-styleable name="AnimateText">
+        <attr name="time" format="integer" />
+        <attr name="annimaStart" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="HorizontalPicker">
+        <attr name="android:textColor" />
+        <attr name="android:textSize" />
+        <attr name="values" format="reference" />
+        <attr name="android:ellipsize" />
+        <attr name="android:marqueeRepeatLimit" />
+        <attr name="dividerSize" format="dimension" />
+        <attr name="sideItems" format="integer" />
+    </declare-styleable>
+
+</resources>

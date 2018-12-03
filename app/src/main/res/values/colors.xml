@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="red">#ff0000</color>
+    <color name="transparent">#00000000</color>
+    <color name="translucent">#80000000</color>
+    <color name="translucent_dark">#cc000000</color>
+
+    <color name="auxMute">#EF8419</color>
+    <color name="auxPlaying">#008ee4</color>
+
+    <color name="rgbDialogBgColor">#dbdedd</color>
+    <color name="rgbDialogTextColor">#595858</color>
+
+    <color name="ledCustomBottom">#ef861b</color>
+
+    <!-- 首页 MainActivity 蓝牙连接信息 enable = true 时字体颜色-->
+    <color name="bluetoothInfoEnableColor">#17a0e3</color>
+    <!-- 首页 MainActivity 蓝牙连接信息 enable = false 时字体颜色-->
+    <color name="bluetoothInfoDisableColor">#5e5d5d</color>
+
+    <!--音乐控制台 分割线 颜色-->
+    <color name="musicControlLineColor">#18323a</color>
+
+    <!--自定义 List 列表 分割线颜色-->
+    <color name="ledListLineColor">#6f6f6f</color>
+
+    <color name="bluetoothInfoColor">#9E9E9E</color>
+
+</resources>

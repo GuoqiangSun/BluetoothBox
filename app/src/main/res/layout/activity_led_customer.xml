@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginRight="15dp"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="60dp"
+            android:layout_height="35dp"
+            android:contentDescription="@null"
+            android:paddingLeft="15dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:src="@drawable/ic_back" />
+
+        <TextView
+            style="@style/BoldTextViewStyle"
+            android:text="@string/led_seq_name"
+            android:textSize="17sp" />
+
+        <TextView
+            android:id="@+id/et_seq_name"
+            style="@style/BoldTextViewStyle"
+            android:background="@drawable/bg_underline"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:maxLength="8"
+            android:padding="5dp"
+            android:text="HOME"
+            android:textSize="13sp" />
+
+
+
+    </LinearLayout>
+
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_led"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="35dp"
+        android:layout_marginRight="35dp"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1"
+        android:overScrollMode="never" />
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:background="#8C8C8C"
+        android:paddingLeft="12dp"
+        android:paddingRight="15dp">
+
+        <TextView
+            android:id="@+id/tv_save"
+            style="@style/WhiteBoldTextStyle"
+            android:layout_centerVertical="true"
+            android:background="@drawable/bg_led_save"
+            android:ems="4"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="Save" />
+
+        <TextView
+            android:id="@+id/tv_list"
+            style="@style/WhiteBoldTextStyle"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/bg_led_list"
+            android:ems="4"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="List" />
+
+    </RelativeLayout>
+
+</LinearLayout>

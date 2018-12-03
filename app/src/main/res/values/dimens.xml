@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--RGB 弹框 边距-->
+    <dimen name="dialog_rgb_ll_margin_left">50dp</dimen>
+    <dimen name="dialog_rgb_ll_margin_top">30dp</dimen>
+    <dimen name="dialog_rgb_icon_width">35dp</dimen>
+    <!--色块选择界面 左右边距值-->
+    <dimen name="select_color_activity_margin_left">55dp</dimen>
+    <dimen name="seq_list_activity_margin_left">15dp</dimen>
+
+    <!-- LED 自定义颜色界面，下边三个选择条的左边距-->
+    <dimen name="led_main_margin_left">20dp</dimen>
+
+</resources>

@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="13dp"
+        android:layout_marginTop="15dp">
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:contentDescription="@null"
+            android:paddingLeft="15dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:src="@drawable/ic_back" />
+
+        <ImageView
+            android:id="@+id/iv_menu"
+            android:layout_width="35dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:contentDescription="@null"
+            app:srcCompat="@drawable/ic_menu" />
+
+        <LinearLayout
+            android:id="@+id/ll_rgb_info"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@id/iv_menu"
+            android:layout_toRightOf="@id/iv_back"
+            android:background="@drawable/bg_rgp_info"
+            android:orientation="horizontal"
+            android:paddingRight="10dp">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="5dp"
+                android:src="@drawable/ic_color_r" />
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="5dp"
+                android:src="@drawable/ic_color_g" />
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="5dp"
+                android:src="@drawable/ic_color_b" />
+
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/fl_color_picker"
+        android:layout_width="280dp"
+        android:layout_height="280dp">
+
+        <com.bazooka.bluetoothbox.ui.view.colorpicker.ColorPickView
+            android:id="@+id/colorPickerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            app:center_radius="17dp"
+            app:selector="@drawable/color_picker" />
+
+
+        <!--<com.bazooka.bluetoothbox.ui.view.colorpicker.ColorPickerView-->
+        <!--android:id="@+id/colorPickerView"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_margin="20dp"-->
+        <!--app:paletteSrc="@drawable/palette"-->
+        <!--app:selectorSrc="@drawable/color_picker" />-->
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_frame_color" />
+
+    </FrameLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-10dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp">
+
+        <ImageView
+            android:id="@+id/iv_demo"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+
+            android:src="@drawable/selector_demo" />
+
+        <ImageView
+            android:id="@+id/iv_switch"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/selector_led_switch_state" />
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_marginLeft="29dp"
+        android:layout_marginRight="29dp"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical"
+        android:paddingBottom="10dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_brightness"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerVertical="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_fm_brightness" />
+
+            <SeekBar
+                android:id="@+id/sb_brightness"
+                style="@style/SeekBarStyle"
+                android:layout_width="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/led_main_margin_left"
+                android:layout_toRightOf="@id/iv_brightness"
+                android:max="100"
+                android:maxHeight="8dp"
+                android:progress="50"
+                android:progressDrawable="@drawable/progress_led"
+                android:thumb="@drawable/ic_fm_thumb" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/sb_brightness"
+                android:layout_below="@id/sb_brightness"
+                android:text="0.5x" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/sb_brightness"
+                android:layout_alignRight="@id/sb_brightness"
+                android:layout_below="@id/sb_brightness"
+                android:gravity="center"
+                android:text="1x" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignRight="@id/sb_brightness"
+                android:layout_below="@id/sb_brightness"
+                android:text="2x" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_gravity="center"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/iv_speed"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_fm_speed" />
+
+            <SeekBar
+                android:id="@+id/sb_speed"
+                style="@style/SeekBarStyle"
+                android:layout_width="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/led_main_margin_left"
+                android:layout_toRightOf="@id/iv_speed"
+                android:max="100"
+                android:maxHeight="8dp"
+                android:progress="50"
+                android:progressDrawable="@drawable/progress_led"
+                android:thumb="@drawable/ic_fm_thumb" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/sb_speed"
+                android:layout_below="@id/sb_speed"
+                android:text="0.5x" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/sb_speed"
+                android:layout_alignRight="@id/sb_speed"
+                android:layout_below="@id/sb_speed"
+                android:gravity="center"
+                android:text="1x" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignRight="@id/sb_speed"
+                android:layout_below="@id/sb_speed"
+                android:text="2x" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_gravity="bottom"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/iv_mode"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:scaleType="fitCenter"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_fm_color" />
+
+
+            <ImageView
+                android:id="@+id/iv_mode_left"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/led_main_margin_left"
+                android:layout_toRightOf="@id/iv_mode"
+                android:padding="5dp"
+                android:src="@drawable/ic_led_mode_left" />
+
+            <ImageView
+                android:id="@+id/iv_mode_right"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:padding="5dp"
+                android:src="@drawable/ic_led_mode_right" />
+
+            <TextView
+                android:id="@+id/tv_mode_name"
+                style="@style/BoldTextViewStyle"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/iv_mode_right"
+                android:layout_toRightOf="@id/iv_mode_left"
+                android:gravity="center"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:singleLine="true"
+                android:textSize="15sp" />
+
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

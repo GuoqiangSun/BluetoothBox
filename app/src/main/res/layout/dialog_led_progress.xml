@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="255dp"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp">
+
+    <RelativeLayout
+        android:id="@+id/rl_progress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:paddingBottom="10dip"
+        android:paddingEnd="8dip"
+        android:paddingStart="8dip"
+        android:paddingTop="10dip">
+
+        <TextView
+            style="@style/DialogTextStyle"
+            android:layout_width="match_parent"
+            android:layout_marginTop="40dp"
+            android:gravity="center"
+            android:text="@string/sync_hint" />
+
+        <ProgressBar
+            android:id="@+id/progress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:progressDrawable="@drawable/progress_flash_send"
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:layout_centerInParent="true"/>
+
+        <TextView
+            android:id="@+id/tv_progress"
+            style="@style/DialogTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/progress"
+            android:text="1/17" />
+
+
+        <Button
+            android:id="@+id/btn_cancel"
+            style="@style/WhiteTextStyle"
+            android:layout_width="110dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/bg_dark_grey"
+            android:text="@string/cancel"
+            android:textAllCaps="false" />
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:id="@+id/ll_send_finished"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_finsh_message"
+            style="@style/BoldTextViewStyle"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:paddingTop="30dp"
+            android:text="@string/sync_succeed"
+            android:textAllCaps="true"
+            android:textSize="17sp" />
+
+        <Button
+            android:id="@+id/btn_okay"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="20dp"
+            android:minHeight="0dp"
+            android:text="@string/okay"
+            android:textAllCaps="true" />
+
+    </LinearLayout>
+
+
+</FrameLayout>

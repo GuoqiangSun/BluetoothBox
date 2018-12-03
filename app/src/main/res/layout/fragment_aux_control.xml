@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:background="@drawable/bg_music_content"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_music_state"
+            style="@style/BoldTextViewStyle"
+            android:text="@string/aux_playing"
+            android:textColor="@color/auxPlaying"
+            android:textSize="22sp" />
+
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.2">
+
+        <ImageView
+            android:id="@+id/iv_volume_control"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:scaleType="center"
+            android:layout_gravity="bottom|center_horizontal"
+            android:src="@drawable/ic_play" />
+    </FrameLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.8">
+
+        <TextView
+            android:id="@+id/tv_min"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="MIN"
+            android:textColor="#7c898d"
+            android:textSize="10sp" />
+
+        <TextView
+            android:id="@+id/tv_max"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="MAX"
+            android:textColor="#7c898d"
+            android:textSize="10sp" />
+
+        <SeekBar
+            android:id="@+id/sb_volume"
+            style="@style/SeekBarStyle"
+            android:layout_width="0dp"
+
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_toLeftOf="@id/tv_max"
+            android:layout_toRightOf="@id/tv_min"
+            android:maxHeight="13dp"
+            android:progressDrawable="@drawable/progress_volume"
+            android:thumb="@drawable/ic_volume_thumb" />
+
+
+    </RelativeLayout>
+
+</LinearLayout>

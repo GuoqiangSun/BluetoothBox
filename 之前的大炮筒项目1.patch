@@ -1,0 +1,1647 @@
+Index: app/src/main/java/com/bazooka/bluetoothbox/application/App.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/bazooka/bluetoothbox/application/App.java	(revision 5)
++++ app/src/main/java/com/bazooka/bluetoothbox/application/App.java	(date 1535508445823)
+@@ -59,6 +59,7 @@
+         Stetho.initializeWithDefaults(this);
+ 
+         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
++        //返回特定流的最大音量指数
+         maxMusicVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+ 
+         registerActivityLifecycleCallbacks(activityLifecycleCallbacks);
+@@ -85,6 +86,7 @@
+ 
+         @Override
+         public void onActivityStarted(Activity activity) {
++            //返回特定数据流的当前音量索引
+             int currVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+             if (currVolume != maxMusicVolume) {
+                 mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxMusicVolume, 0);
+Index: app/src/main/java/com/bazooka/bluetoothbox/cache/db/FmChannelCacheHelper.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/bazooka/bluetoothbox/cache/db/FmChannelCacheHelper.java	(revision 5)
++++ app/src/main/java/com/bazooka/bluetoothbox/cache/db/FmChannelCacheHelper.java	(date 1540367184479)
+@@ -38,6 +38,9 @@
+     public void addCache(FmChannelCache entity){
+         mDao.insert(entity);
+     }
++    public void deleteCache(FmChannelCache entity){
++        mDao.delete(entity);
++    }
+ 
+     /**
+      * 添加缓存
+@@ -62,6 +65,22 @@
+         }
+         return caches;
+     }
++
++    /**
++     * @param size 已存在的fm列表
++     * @param channel 当前保存的频道
++     * @return
++     */
++    public List<FmChannelCache> addCache(int size,int channel){
++        ArrayList<FmChannelCache> caches = new ArrayList<>();
++        FmChannelCache channelCache = new FmChannelCache();
++        String name = "ST " + (size + 1);
++        channelCache.setChannel(channel);
++        channelCache.setName(name);
++        addCache(channelCache); //加入数据库
++        caches.add(channelCache);
++        return caches;
++    }
+ 
+     /**
+      * 查询所有缓存的频道
+Index: app/src/main/java/com/bazooka/bluetoothbox/listener/FmItemDleteListener.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/bazooka/bluetoothbox/listener/FmItemDleteListener.java	(date 1540284366284)
++++ app/src/main/java/com/bazooka/bluetoothbox/listener/FmItemDleteListener.java	(date 1540284366284)
+@@ -0,0 +1,7 @@
++package com.bazooka.bluetoothbox.listener;
++
++import org.simpleframework.xml.stream.Position;
++
++public interface FmItemDleteListener {
++    void delete( int position);
++}
+Index: app/src/main/java/com/bazooka/bluetoothbox/service/PlayService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/bazooka/bluetoothbox/service/PlayService.java	(revision 5)
++++ app/src/main/java/com/bazooka/bluetoothbox/service/PlayService.java	(date 1536826552401)
+@@ -102,11 +102,12 @@
+     /**
+      * 扫描音乐
+      */
++    @SuppressWarnings("all")
+     public void updateMusicList(final EventCallback<Void> callback) {
+         new AsyncTask<Void, Void, List<Music>>() {
+             @Override
+             protected List<Music> doInBackground(Void... params) {
+-                return MusicUtils.scanMusic(PlayService.this);
++                    return MusicUtils.scanMusic(PlayService.this);
+             }
+ 
+             @Override
+Index: app/src/main/java/com/bazooka/bluetoothbox/ui/activity/FmModeActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/bazooka/bluetoothbox/ui/activity/FmModeActivity.java	(revision 5)
++++ app/src/main/java/com/bazooka/bluetoothbox/ui/activity/FmModeActivity.java	(date 1540368468234)
+@@ -29,9 +29,9 @@
+ 
+ /**
+  * @author 尹晓童
+- *         邮箱：yinxtno1@yeah.net
+- *         时间：2017/9/14
+- *         作用：FM播放界面
++ * 邮箱：yinxtno1@yeah.net
++ * 时间：2017/9/14
++ * 作用：FM播放界面
+  */
+ 
+ public class FmModeActivity extends MusicCommonActivity {
+@@ -53,6 +53,7 @@
+      */
+     private int currPlayChannel = 87500;
+     private PromptDialogV2 hintDialog;
++    private int channels;
+ 
+     @Override
+     public void initData() {
+@@ -76,7 +77,7 @@
+         fragments.add(fmListFragment = FMListFragment.newInstance(fmChannels));
+ 
+         mProgressDialog = new ProgressDialog(mContext);
+-
++        channels=fmControlFragment.getCurrentChannel();
+         mBluzManagerUtils = BluzManagerUtils.getInstance();
+         if (mBluzManagerUtils.getCurrentMode() == BluzManagerData.FuncMode.RADIO) {
+             initRadioManager();
+@@ -130,7 +131,7 @@
+                     hintDialog.show();
+                     return;
+                 }
+-                if(!canScan) {
++                if (!canScan) {
+                     return;
+                 }
+                 mProgressDialog.setMessage(getString(R.string.scan_fm_channels_hint));
+@@ -154,6 +155,7 @@
+                     mRadioManager.select(channel);
+                 }
+             }
++
+             //下一频道
+             @Override
+             public void onNextClick() {
+@@ -168,6 +170,7 @@
+                     mRadioManager.select(channel);
+                 }
+             }
++
+             //向前微调
+             @Override
+             public void onMicroPreClick() {
+@@ -179,6 +182,7 @@
+                 fmControlFragment.setCurrentChannel(currPlayChannel);
+                 mRadioManager.select(currPlayChannel);
+             }
++
+             //向后微调
+             @Override
+             public void onMicroNextClick() {
+@@ -190,14 +194,29 @@
+                 fmControlFragment.setCurrentChannel(currPlayChannel);
+                 mRadioManager.select(currPlayChannel);
+             }
++
++            //添加FM频道
++            @Override
++            public void onAddFmClick() {
++                if (BluzDeviceUtils.getInstance().getConnectionDevice() == null) {
++                    hintDialog.show();
++                    return;
++                }
++                int size = fmChannels.size();
++                //添加数据库记录
++                List<FmChannelCache> fmChannelCaches = FmChannelCacheHelper.getInstance().addCache(size, channels);
++                fmChannels.addAll(fmChannelCaches);//添加到列表中
++                fmListFragment.setFmChannels(fmChannelCaches);
++
++            }
+         });
+ 
+         fmControlFragment.setOnUiChangeListener(new FmControlFragment.OnUiChangeListener() {
+             @Override
+             public void onChannelChangeFinished(float value) {
+-                int channel = (int) (value * 1000);
++                 channels = (int) (value * 1000);
+                 if (mRadioManager != null) {
+-                    mRadioManager.select(channel);
++                    mRadioManager.select(channels);
+                 }
+             }
+ 
+Index: app/src/main/java/com/bazooka/bluetoothbox/ui/activity/LEDMainActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/bazooka/bluetoothbox/ui/activity/LEDMainActivity.java	(revision 5)
++++ app/src/main/java/com/bazooka/bluetoothbox/ui/activity/LEDMainActivity.java	(date 1535681173630)
+@@ -114,7 +114,7 @@
+     @Override
+     public void initView() {
+ 
+-        int displayHeight = CalculateUtils.getDisplayHeight();
++        int displayHeight = CalculateUtils.getDisplayHeight();//获取屏幕高度(px)
+         int displayWidth = (int) (CalculateUtils.getDisplayWidth() * 3.0f / 4);//屏幕宽度的3/4
+         int colorPickerWidth = Math.min(displayWidth, displayHeight / 2);
+         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(colorPickerWidth, colorPickerWidth);
+Index: app/src/main/java/com/bazooka/bluetoothbox/ui/activity/MainActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/bazooka/bluetoothbox/ui/activity/MainActivity.java	(revision 5)
++++ app/src/main/java/com/bazooka/bluetoothbox/ui/activity/MainActivity.java	(date 1540438290526)
+@@ -30,8 +30,10 @@
+ import com.bazooka.bluetoothbox.listener.NoDoubleClickListener;
+ import com.bazooka.bluetoothbox.ui.dialog.BluetoothSearchDialog;
+ import com.bazooka.bluetoothbox.ui.dialog.PromptDialog;
++import com.bazooka.bluetoothbox.ui.dialog.PromptDialogV2;
+ import com.bazooka.bluetoothbox.ui.view.PullUpDragLayout;
+ import com.bazooka.bluetoothbox.utils.DialogFragmentUtils;
++import com.bazooka.bluetoothbox.utils.DialogUtils;
+ import com.bazooka.bluetoothbox.utils.SpManager;
+ import com.bazooka.bluetoothbox.utils.ToastUtil;
+ import com.bazooka.bluetoothbox.utils.animutils.AnimationsContainer;
+@@ -49,9 +51,9 @@
+ 
+ /**
+  * @author 尹晓童
+- *         邮箱：yinxtno1@yeah.net
+- *         时间：2017/9/14
+- *         作用：主页面
++ * 邮箱：yinxtno1@yeah.net
++ * 时间：2017/9/14
++ * 作用：主页面
+  */
+ public class MainActivity extends BaseActivity {
+ 
+@@ -101,13 +103,17 @@
+     private ObjectAnimator mScaleAnimator;
+     private AnimationsContainer.FramesSequenceAnimation animation;
+ 
+-    private HandlerThread saveDefaultFlashThread ;
+-    private Handler saveDefaultFlashHandler ;
++    private HandlerThread saveDefaultFlashThread;
++    private Handler saveDefaultFlashHandler;
++    private boolean connected;
++
++    private PromptDialogV2 hintDialog;
+ 
+     public static void showActivity(Context context, boolean openBluetoothConnect) {
+         Intent intent = new Intent(context, MainActivity.class);
+         intent.putExtra("openBluetoothConnect", openBluetoothConnect);
+         context.startActivity(intent);
++
+     }
+ 
+     @Override
+@@ -121,17 +127,18 @@
+         EventBus.getDefault().register(this);
+         initHandler();
+ 
+-        {
+-            ObjectAnimator alpha1 = ObjectAnimator.ofFloat(btnBluetooth, "alpha", 0f, 1f);
++
++//        {
++//            ObjectAnimator alpha1 = ObjectAnimator.ofFloat(btnBluetooth, "alpha", 0f, 1f);
+ //            ObjectAnimator alpha2 = ObjectAnimator.ofFloat(btnFm, "alpha", 0f, 1f);
+-            ObjectAnimator alpha3 = ObjectAnimator.ofFloat(btnUsb, "alpha", 0f, 1f);
+-            ObjectAnimator alpha4 = ObjectAnimator.ofFloat(btnAux, "alpha", 0f, 1f);
+-            ObjectAnimator alpha5 = ObjectAnimator.ofFloat(btnLed, "alpha", 0f, 1f);
+-            ObjectAnimator alpha6 = ObjectAnimator.ofFloat(btnSwitch, "alpha", 0f, 1f);
+-            AnimatorSet as = new AnimatorSet();
+-            as.playSequentially(alpha1, alpha3, alpha4, alpha5, alpha6);
+-            as.start();
+-        }
++//            ObjectAnimator alpha3 = ObjectAnimator.ofFloat(btnUsb, "alpha", 0f, 1f);
++////            ObjectAnimator alpha4 = ObjectAnimator.ofFloat(btnAux, "alpha", 0f, 1f);
++//            ObjectAnimator alpha5 = ObjectAnimator.ofFloat(btnLed, "alpha", 0f, 1f);
++////            ObjectAnimator alpha6 = ObjectAnimator.ofFloat(btnSwitch, "alpha", 0f, 1f);
++//            AnimatorSet as = new AnimatorSet();
++//            as.playSequentially(alpha1,alpha2, alpha3,alpha5);
++//            as.start();
++//        }
+         {
+             PropertyValuesHolder scaleXHolder = PropertyValuesHolder.ofFloat("scaleX", 1.0f, 0.5f, 1.0f);
+             PropertyValuesHolder scaleYHolder = PropertyValuesHolder.ofFloat("scaleY", 1.0f, 0.5f, 1.0f);
+@@ -152,15 +159,26 @@
+ //        EventBus.getDefault().register(this);
+ 
+         animation = AnimationsContainer.getInstance(R.array.anim_res, 30).createProgressDialogAnim(gifImageView);
++
++        new Handler().postDelayed(new Runnable() {
++            @Override
++            public void run() {
++                pdlRoot.toggleBottomView();
++
++            }
++        }, 100);
++
++
+     }
+ 
+     @Override
+     public void initView() {
+         tvBluetoothInfo.setText(getString(R.string.bluetooth_info, "______", "_______"));
+         saveDefaultFlash();
++
+     }
+ 
+-    private void initHandler(){
++    private void initHandler() {
+         saveDefaultFlashThread = new HandlerThread("[MainActivity.saveDefaultFlashThread]",
+                 Process.THREAD_PRIORITY_BACKGROUND);
+         saveDefaultFlashThread.start();
+@@ -204,6 +222,7 @@
+             if (!pdlRoot.isOpen()) {
+                 pdlRoot.toggleBottomView();
+             }
++
+         }
+     }
+ 
+@@ -217,6 +236,7 @@
+             isConnect = true;
+             SpManager.getInstance().saveDeviceAddress(connectedDevice.getAddress());
+         }
++
+     }
+ 
+     @Override
+@@ -247,6 +267,22 @@
+                 ivDrag.setVisibility(View.VISIBLE);
+                 ivTitle.setVisibility(View.INVISIBLE);
+                 menuClose();
++                //判断是否连接
++                if (!isConnect) {//弹出提示框 请求连接蓝牙
++                    hintDialog = DialogUtils.createNoConnectedDialog(mContext, new PromptDialogV2.OnButtonClickListener() {
++                        @Override
++                        public void onPositiveClick() {
++                            hintDialog.dismiss();
++                        }
++
++                        @Override
++                        public void onNegativeClick() {
++                            MainActivity.showActivity(mContext, true);
++                            hintDialog.dismiss();
++                        }
++                    });
++                    hintDialog.show();
++                }
+             }
+         });
+ 
+@@ -263,28 +299,42 @@
+         });
+ 
+         bluzDeviceUtils.setOnConnectionListener();
++
++//
+     }
+ 
+     @OnClick({R.id.btn_bluetooth, R.id.btn_fm, R.id.btn_usb, R.id.btn_aux, R.id.btn_led, R.id.btn_switch})
+     public void onViewClicked(View view) {
+         switch (view.getId()) {
+             case R.id.btn_bluetooth:
+-                showActivity(BluetoothMusicActivity.class);
++                if (!pdlRoot.isOpen()) {
++                    showActivity(BluetoothMusicActivity.class);
++                }
+                 break;
+             case R.id.btn_fm:
+-                showActivity(FmModeActivity.class);
++                if (!pdlRoot.isOpen()) {
++                    showActivity(FmModeActivity.class);
++                }
+                 break;
+             case R.id.btn_usb:
+-                showActivity(UsbModeActivity.class);
++                if (!pdlRoot.isOpen()) {
++                    showActivity(UsbModeActivity.class);
++                }
+                 break;
+             case R.id.btn_aux:
+-                showActivity(AuxModeActivity.class);
++                if (!pdlRoot.isOpen()) {
++                    showActivity(AuxModeActivity.class);
++                }
+                 break;
+             case R.id.btn_led:
+-                showActivity(LEDMainActivity.class);
++                if (!pdlRoot.isOpen()) {
++                    showActivity(LEDMainActivity.class);
++                }
+                 break;
+             case R.id.btn_switch:
+-                showActivity(SwitchActivity.class);
++                if (!pdlRoot.isOpen()) {
++                    showActivity(SwitchActivity.class);
++                }
+                 break;
+             default:
+                 break;
+@@ -321,6 +371,7 @@
+     @Subscribe(threadMode = ThreadMode.MAIN)
+     public void onConnectionStateChanged(ConnectedStateChangedEvent event) {
+         BluetoothDevice device = event.getBluetoothDevice();
++        connected = event.isConnected();
+         if (event.isConnected()) {
+             mScaleAnimator.end();
+             connectedDevice = device;
+@@ -330,6 +381,17 @@
+             ivBluetoothState.setSelected(true);
+             tvBluetoothInfo.setText(getString(R.string.bluetooth_info, device.getName(), device.getAddress()));
+ 
++            if (device.getName().equals("BAZ-G2-FM")) {
++                btnAux.setVisibility(View.GONE);
++                btnSwitch.setVisibility(View.GONE);
++                btnFm.setVisibility(View.VISIBLE);
++            }
++            if (device.getName().equals("BAZ-G2")) {
++                btnFm.setVisibility(View.GONE);
++                btnAux.setVisibility(View.VISIBLE);
++                btnSwitch.setVisibility(View.VISIBLE);
++            }
++
+         } else {
+             mScaleAnimator.start();
+             isConnect = false;
+@@ -367,7 +429,7 @@
+     @Override
+     protected void onStart() {
+         super.onStart();
+-        if(pdlRoot.isOpen()) {
++        if (pdlRoot.isOpen()) {
+             animation.start();
+         }
+     }
+Index: app/src/main/java/com/bazooka/bluetoothbox/ui/adapter/FmChannelAdapter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/bazooka/bluetoothbox/ui/adapter/FmChannelAdapter.java	(revision 5)
++++ app/src/main/java/com/bazooka/bluetoothbox/ui/adapter/FmChannelAdapter.java	(date 1540284366278)
+@@ -2,9 +2,11 @@
+ 
+ import android.content.Context;
+ import android.support.annotation.Nullable;
++import android.view.View;
+ 
+ import com.bazooka.bluetoothbox.R;
+ import com.bazooka.bluetoothbox.cache.db.entity.FmChannelCache;
++import com.bazooka.bluetoothbox.listener.FmItemDleteListener;
+ import com.chad.library.adapter.base.BaseQuickAdapter;
+ import com.chad.library.adapter.base.BaseViewHolder;
+ 
+@@ -12,23 +14,35 @@
+ 
+ /**
+  * @author 尹晓童
+- *         邮箱：yinxtno1@yeah.net
+- *         时间：2017/11/22
+- *         作用：Fm频道列表适配器
++ * 邮箱：yinxtno1@yeah.net
++ * 时间：2017/11/22
++ * 作用：Fm频道列表适配器
+  */
+ 
+ public class FmChannelAdapter extends BaseQuickAdapter<FmChannelCache, BaseViewHolder> {
+ 
+     private Context mContext;
++    private FmItemDleteListener listener;
++
+     public FmChannelAdapter(Context context, @Nullable List<FmChannelCache> data) {
+-        super(R.layout.item_music, data);
++        super(R.layout.item_fm, data);
+         mContext = context;
+     }
+ 
+     @Override
+     protected void convert(BaseViewHolder helper, FmChannelCache item) {
+-        helper.setText(R.id.tv_name, item.getName())
+-                .setText(R.id.tv_info, mContext.getString(R.string.fm_channel, item.getChannel() / 1000f));
++        helper.setText(R.id.fm_name, item.getName())
++                .setText(R.id.fm_channel, mContext.getString(R.string.fm_channel, item.getChannel() / 1000f));
++        helper.getView(R.id.fm_delete).setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View v) {//刪除該選項
++                listener.delete(helper.getAdapterPosition());
++            }
++        });
+ 
++    }
++
++    public void setFmitemDeleteListener(FmItemDleteListener listener) {
++        this.listener = listener;
+     }
+ }
+Index: app/src/main/java/com/bazooka/bluetoothbox/ui/fragment/BluetoothPlayControlFragment.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/bazooka/bluetoothbox/ui/fragment/BluetoothPlayControlFragment.java	(revision 5)
++++ app/src/main/java/com/bazooka/bluetoothbox/ui/fragment/BluetoothPlayControlFragment.java	(date 1537259681152)
+@@ -88,6 +88,7 @@
+         sbVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+             @Override
+             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
++
+             }
+ 
+             @Override
+Index: app/src/main/java/com/bazooka/bluetoothbox/ui/fragment/FmControlFragment.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/bazooka/bluetoothbox/ui/fragment/FmControlFragment.java	(revision 5)
++++ app/src/main/java/com/bazooka/bluetoothbox/ui/fragment/FmControlFragment.java	(date 1540368518986)
+@@ -20,13 +20,15 @@
+ import org.greenrobot.eventbus.ThreadMode;
+ 
+ import butterknife.BindView;
++import butterknife.ButterKnife;
+ import butterknife.OnClick;
++import butterknife.Unbinder;
+ 
+ /**
+  * @author 尹晓童
+- *         邮箱：yinxtno1@yeah.net
+- *         时间：2017/9/15
+- *         作用：FM 播放控制页面
++ * 邮箱：yinxtno1@yeah.net
++ * 时间：2017/9/15
++ * 作用：FM 播放控制页面
+  */
+ 
+ public class FmControlFragment extends BaseFragment {
+@@ -46,13 +48,16 @@
+     ImageView ivMicroNext;
+     @BindView(R.id.sb_volume)
+     SeekBar sbVolume;
++    @BindView(R.id.iv_fm_add)
++    ImageView ivFmAdd;
++
+ 
+ 
+     private OnButtonClickListener mOnButtonClickListener;
+     private OnUiChangeListener mOnUiChangeListener;
+     private int mCurChannel = 87500;
+ 
+-    public static FmControlFragment newInstance(int curChannel){
++    public static FmControlFragment newInstance(int curChannel) {
+         FmControlFragment fragment = new FmControlFragment();
+         Bundle bundle = new Bundle();
+         bundle.putInt(ATTR_CUR_CHANNEL, curChannel);
+@@ -99,6 +104,7 @@
+             }
+         });
+ 
++
+         sbVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+             @Override
+             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+@@ -118,7 +124,7 @@
+     }
+ 
+ 
+-    @OnClick({R.id.iv_scan, R.id.iv_pre, R.id.iv_next, R.id.iv_micro_pre, R.id.iv_micro_next})
++    @OnClick({R.id.iv_scan, R.id.iv_pre, R.id.iv_next, R.id.iv_micro_pre, R.id.iv_micro_next,R.id.iv_fm_add})
+     public void onViewClicked(View view) {
+         if (mOnButtonClickListener != null) {
+             switch (view.getId()) {
+@@ -137,6 +143,8 @@
+                 case R.id.iv_micro_next:
+                     mOnButtonClickListener.onMicroNextClick();
+                     break;
++                case R.id.iv_fm_add:
++                    mOnButtonClickListener.onAddFmClick();
+                 default:
+                     break;
+             }
+@@ -149,6 +157,10 @@
+         tvFmChannel.setText(getString(R.string.fm_channel, mCurChannel / 1000f));
+     }
+ 
++    public int getCurrentChannel(){
++        return mCurChannel;
++    }
++
+     public void setOnButtonClickListener(OnButtonClickListener l) {
+         this.mOnButtonClickListener = l;
+     }
+@@ -173,6 +185,7 @@
+     public void onDestroyView() {
+         super.onDestroyView();
+         EventBus.getDefault().unregister(this);
++
+     }
+ 
+     public void setOnUiChangeListener(OnUiChangeListener l) {
+@@ -189,12 +202,15 @@
+         void onMicroPreClick();
+ 
+         void onMicroNextClick();
++
++        void onAddFmClick();
+     }
+ 
+     public interface OnUiChangeListener {
+         void onChannelChangeFinished(float value);
+ 
+         void onVolumeChanged(int volume);
++
+     }
+ 
+ }
+Index: app/src/main/java/com/bazooka/bluetoothbox/ui/fragment/FMListFragment.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/bazooka/bluetoothbox/ui/fragment/FMListFragment.java	(revision 5)
++++ app/src/main/java/com/bazooka/bluetoothbox/ui/fragment/FMListFragment.java	(date 1540368090497)
+@@ -9,7 +9,9 @@
+ 
+ import com.bazooka.bluetoothbox.R;
+ import com.bazooka.bluetoothbox.base.fragment.BaseFragment;
++import com.bazooka.bluetoothbox.cache.db.FmChannelCacheHelper;
+ import com.bazooka.bluetoothbox.cache.db.entity.FmChannelCache;
++import com.bazooka.bluetoothbox.listener.FmItemDleteListener;
+ import com.bazooka.bluetoothbox.ui.adapter.FmChannelAdapter;
+ 
+ import java.util.ArrayList;
+@@ -56,10 +58,23 @@
+             mFmChannels.addAll(channels);
+         }
+         adapter = new FmChannelAdapter(getContext(), mFmChannels);
++
++        adapter.setFmitemDeleteListener(new FmItemDleteListener() {
++            @Override
++            public void delete(int position) {
++                FmChannelCache channelCache = mFmChannels.get(position);
++                FmChannelCacheHelper.getInstance().deleteCache(channelCache);
++                mFmChannels.remove(position);
++                adapter.notifyDataSetChanged();
++                //删除数据库记录
++            }
++        });
+     }
++
+ 
+     @Override
+     public void initView() {
++
+         rvMusicList.setLayoutManager(new LinearLayoutManager(mContext));
+         rvMusicList.setAdapter(adapter);
+     }
+Index: app/src/main/java/com/bazooka/bluetoothbox/ui/view/colorpicker/ColorPickView.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/bazooka/bluetoothbox/ui/view/colorpicker/ColorPickView.java	(revision 5)
++++ app/src/main/java/com/bazooka/bluetoothbox/ui/view/colorpicker/ColorPickView.java	(date 1537843310484)
+@@ -69,6 +69,7 @@
+         TypedArray types = context.obtainStyledAttributes(attrs,
+                 R.styleable.color_picker);
+         try {
++            //背景圆半径
+             bigCircle = (int) types.getDimension(
+                     R.styleable.color_picker_circle_radius, 100);
+             rudeRadius = (int) types.getDimension(
+@@ -151,6 +152,7 @@
+                 }
+                 handlerColorChangeListener(bitmapBack.getPixel(Math.abs(mRockPosition.x),
+                         Math.abs(mRockPosition.y)));
++
+                 break;
+             case MotionEvent.ACTION_CANCEL:
+             case MotionEvent.ACTION_UP:
+Index: app/src/main/java/com/bazooka/bluetoothbox/utils/bluetooth/BluzDeviceUtils.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/bazooka/bluetoothbox/utils/bluetooth/BluzDeviceUtils.java	(revision 5)
++++ app/src/main/java/com/bazooka/bluetoothbox/utils/bluetooth/BluzDeviceUtils.java	(date 1540368963214)
+@@ -69,6 +69,7 @@
+ 
+     public IBluzDevice getBluzDevice(){
+         return iBluzDevice;
++
+     }
+ 
+     public void setOnConnectionListener(){
+Index: app/src/main/java/com/bazooka/bluetoothbox/utils/bluetooth/BluzManagerUtils.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/bazooka/bluetoothbox/utils/bluetooth/BluzManagerUtils.java	(revision 5)
++++ app/src/main/java/com/bazooka/bluetoothbox/utils/bluetooth/BluzManagerUtils.java	(date 1537946089739)
+@@ -297,7 +297,7 @@
+     /**
+      * 发送亮度
+      *
+-     * @param brightness 亮度
++     * @param brightness 亮度 0-255
+      */
+     public void sendBrightness(int brightness) {
+         sendCommand(0x63, (byte) brightness);
+Index: app/src/main/res/layout/activity_led_main.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_led_main.xml	(revision 5)
++++ app/src/main/res/layout/activity_led_main.xml	(date 1537944358988)
+@@ -83,6 +83,7 @@
+             app:center_radius="17dp"
+             app:selector="@drawable/color_picker" />
+ 
++
+         <!--<com.bazooka.bluetoothbox.ui.view.colorpicker.ColorPickerView-->
+         <!--android:id="@+id/colorPickerView"-->
+         <!--android:layout_width="match_parent"-->
+Index: app/src/main/res/layout/activity_main.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_main.xml	(revision 5)
++++ app/src/main/res/layout/activity_main.xml	(date 1540438168010)
+@@ -28,7 +28,7 @@
+             android:layout_height="0dp"
+             android:layout_marginBottom="10dp"
+             android:layout_weight="1"
+-            android:alpha="0"
++
+             android:background="@null"
+             android:contentDescription="@null"
+             android:padding="0dp"
+@@ -41,13 +41,13 @@
+             android:layout_height="0dp"
+             android:layout_marginBottom="10dp"
+             android:layout_weight="1"
+-            android:alpha="0"
++
+             android:background="@null"
+             android:contentDescription="@null"
+             android:padding="0dp"
+             android:scaleType="fitCenter"
+             android:src="@drawable/icon_main_fm"
+-            android:visibility="gone"/>
++            />
+ 
+         <ImageButton
+             android:id="@+id/btn_usb"
+@@ -55,7 +55,7 @@
+             android:layout_height="0dp"
+             android:layout_marginBottom="10dp"
+             android:layout_weight="1"
+-            android:alpha="0"
++
+             android:background="@null"
+             android:contentDescription="@null"
+             android:padding="0dp"
+@@ -68,7 +68,6 @@
+             android:layout_height="0dp"
+             android:layout_marginBottom="10dp"
+             android:layout_weight="1"
+-            android:alpha="0"
+             android:background="@null"
+             android:contentDescription="@null"
+             android:padding="0dp"
+@@ -81,7 +80,6 @@
+             android:layout_height="0dp"
+             android:layout_marginBottom="10dp"
+             android:layout_weight="1"
+-            android:alpha="0"
+             android:background="@null"
+             android:contentDescription="@null"
+             android:padding="0dp"
+@@ -93,7 +91,6 @@
+             android:layout_width="match_parent"
+             android:layout_height="0dp"
+             android:layout_weight="1"
+-            android:alpha="0"
+             android:background="@null"
+             android:contentDescription="@null"
+             android:padding="0dp"
+Index: app/src/main/res/layout/dialog_loading.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/dialog_loading.xml	(revision 5)
++++ app/src/main/res/layout/dialog_loading.xml	(date 1536057787253)
+@@ -15,7 +15,8 @@
+             android:id="@+id/pb_load"
+             android:layout_width="65dp"
+             android:layout_height="65dp"
+-            android:layout_centerInParent="true"/>
++            android:layout_centerInParent="true"
++            />
+ 
+     </RelativeLayout>
+ 
+Index: app/src/main/res/layout/fragment_fm_controler.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/fragment_fm_controler.xml	(revision 5)
++++ app/src/main/res/layout/fragment_fm_controler.xml	(date 1540364935381)
+@@ -63,6 +63,13 @@
+                 android:layout_height="35dp"
+                 android:layout_weight="1"
+                 android:src="@drawable/ic_micro_next" />
++            <ImageView
++                android:paddingTop="6dp"
++                android:id="@+id/iv_fm_add"
++                android:layout_width="35dp"
++                android:layout_height="50dp"
++                android:layout_weight="1"
++                android:src="@drawable/fm_add" />
+ 
+             <ImageView
+                 android:id="@+id/iv_scan"
+Index: app/src/main/res/layout/item_fm.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/item_fm.xml	(date 1540367957258)
++++ app/src/main/res/layout/item_fm.xml	(date 1540367957258)
+@@ -0,0 +1,58 @@
++<?xml version="1.0" encoding="utf-8"?>
++<android.support.constraint.ConstraintLayout
++    xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
++    xmlns:tools="http://schemas.android.com/tools"
++    android:layout_width="match_parent"
++    android:layout_height="wrap_content"
++    android:paddingTop="7dp"
++    android:paddingBottom="7dp"
++    android:paddingLeft="10dp"
++    android:paddingRight="10dp">
++
++    <ImageView
++        android:id="@+id/fm_delete"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_marginLeft="8dp"
++        android:layout_marginStart="8dp"
++        android:src="@drawable/fm_delete"
++        app:layout_constraintBottom_toBottomOf="parent"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toTopOf="parent" />
++
++    <TextView
++        android:id="@+id/fm_name"
++        style="@style/BoldTextViewStyle"
++        android:layout_alignParentLeft="true"
++        android:layout_alignParentStart="true"
++        android:layout_alignParentTop="true"
++        android:layout_marginLeft="16dp"
++        android:layout_marginStart="16dp"
++        android:ems="5"
++        android:singleLine="true"
++        android:text="BEYONCE"
++        android:textStyle="normal"
++        android:textColor="@color/white"
++        android:textSize="13sp"
++        app:layout_constraintBottom_toBottomOf="parent"
++        app:layout_constraintStart_toEndOf="@+id/fm_delete"
++        app:layout_constraintTop_toTopOf="parent" />
++
++
++    <TextView
++        android:id="@+id/fm_channel"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_marginLeft="56dp"
++        android:layout_marginStart="56dp"
++        android:text="If I were a boy"
++        android:textColor="@color/white"
++        android:textSize="13sp"
++        app:layout_constraintBottom_toBottomOf="parent"
++        app:layout_constraintStart_toEndOf="@+id/fm_name"
++        app:layout_constraintTop_toTopOf="parent" />
++
++
++
++</android.support.constraint.ConstraintLayout>
+\ No newline at end of file
+Index: app/src/main/res/layout/item_line.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/item_line.xml	(revision 5)
++++ app/src/main/res/layout/item_line.xml	(date 1536114624305)
+@@ -2,7 +2,7 @@
+ <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     android:id="@+id/ll_line"
+     android:layout_width="match_parent"
+-    android:layout_height="30dp"
++    android:layout_height="1dp"
+     android:orientation="vertical"
+     android:gravity="center">
+ 
+Index: app/build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/build.gradle	(revision 5)
++++ app/build.gradle	(date 1537944198062)
+@@ -13,6 +13,7 @@
+         versionCode rootProject.ext.versionCode
+         versionName rootProject.ext.versionName
+         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
++
+     }
+     buildTypes {
+         release {
+@@ -62,6 +63,7 @@
+     compile rootProject.ext.dependencies["eventbus"]
+     compile rootProject.ext.dependencies["logger"]
+     compile rootProject.ext.dependencies["greendao"]
++    compile 'com.github.mcxtzhang:SwipeDelMenuLayout:V1.3.0'
+     compile rootProject.ext.dependencies["greendao-generator"]
+     compile rootProject.ext.dependencies["utilcode"]
+     compile rootProject.ext.dependencies["gson"]
+@@ -72,6 +74,7 @@
+ //    compile 'com.github.jokermonn:permissions4m:2.1.2-lib'
+ //    annotationProcessor 'com.github.jokermonn:permissions4m:2.1.2-processor'
+ 
++//    compile 'me.jessyan:autosize:0.9.1'
+     compile 'com.facebook.stetho:stetho:1.5.0'
+     compile 'com.google.guava:guava:23.5-android'
+     testCompile 'junit:junit:4.12'
+Index: gradle/wrapper/gradle-wrapper.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>GBK
+===================================================================
+--- gradle/wrapper/gradle-wrapper.properties	(revision 5)
++++ gradle/wrapper/gradle-wrapper.properties	(date 1539570656814)
+@@ -1,6 +1,6 @@
+-#Thu Aug 31 15:54:32 CST 2017
++#Mon Oct 15 10:30:56 CST 2018
+ distributionBase=GRADLE_USER_HOME
+ distributionPath=wrapper/dists
+ zipStoreBase=GRADLE_USER_HOME
+ zipStorePath=wrapper/dists
+-distributionUrl=https\://services.gradle.org/distributions/gradle-3.3-all.zip
++distributionUrl=https\://services.gradle.org/distributions/gradle-4.4-all.zip
+Index: config.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- config.gradle	(revision 5)
++++ config.gradle	(date 1536733498073)
+@@ -37,6 +37,6 @@
+             "utilcode"                      : "com.blankj:utilcode:1.9.8",
+             "gson"                          : "com.google.code.gson:gson:2.8.2",
+             "WheelPicker"                   : "cn.qqtheme.framework:WheelPicker:1.5.5",
+-            "android-gif-drawable"          : "pl.droidsonroids.gif:android-gif-drawable:1.2.10",
++            "android-gif-drawable"          : "pl.droidsonroids.gif:android-gif-drawable:1.2.10"
+     ]
+ }
+\ No newline at end of file
+Index: settings.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- settings.gradle	(revision 5)
++++ settings.gradle	(date 1535514309397)
+@@ -1,1 +1,2 @@
+ include ':app'
++include ':comlzgcircleSeekBar'
+diff --git app/src/main/res/drawable-xhdpi/fm_add.png app/src/main/res/drawable-xhdpi/fm_add.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..a220c3407d1721a7cbe1d9eabdbf76ecf797d686
+GIT binary patch
+literal 27673
+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
+ArT_o{
+
+diff --git app/src/main/res/drawable-xxhdpi/fm_add.png app/src/main/res/drawable-xxhdpi/fm_add.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..a220c3407d1721a7cbe1d9eabdbf76ecf797d686
+GIT binary patch
+literal 27673
+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
+ArT_o{
+
+diff --git app/src/main/res/drawable-xxhdpi/fm_delete.png app/src/main/res/drawable-xxhdpi/fm_delete.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..1e7bc306a0f157e7dbbf20ee6ea6ca603577fead
+GIT binary patch
+literal 18399
+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
+BwKo6&
+

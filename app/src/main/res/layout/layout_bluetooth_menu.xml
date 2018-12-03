@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/iv_drag"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:scaleType="fitEnd"
+        android:src="@drawable/ic_main_menu_drag"
+        android:layout_marginBottom="-1dp"
+        android:paddingLeft="-1dp"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#332B2B">
+
+        <ImageView
+            android:id="@+id/gif"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/anim_box_1"
+            />
+
+        <ImageView
+            android:id="@+id/iv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_main_menu_title"
+            android:visibility="invisible"
+            />
+
+        <!--<TextView-->
+            <!---->
+            <!--style="@style/WhiteBoldTextStyle"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:background="@drawable/ic_main_menu_title"-->
+            <!--android:gravity="center_horizontal"-->
+            <!--android:paddingTop="20dp"-->
+            <!--android:text="@string/menu"-->
+            <!--android:textSize="18sp" />-->
+
+        <ImageView
+            android:id="@+id/iv_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/iv_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp"
+            android:src="@drawable/selector_phone_bluetooth" />
+
+        <ImageView
+            android:id="@+id/iv_bluetooth_state"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_below="@id/iv_phone"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@id/iv_phone"
+            android:scaleType="centerInside"
+            android:src="@drawable/selector_bluetooth_connect" />
+
+        <TextView
+            android:id="@+id/tv_bluetooth_info"
+            style="@style/WhiteBoldTextStyle"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="30dp"
+            android:textColor="@color/bluetoothInfoColor"
+            android:textSize="16sp"
+            android:textStyle="normal"
+            android:text=""/>
+
+
+    </RelativeLayout>
+
+
+</LinearLayout>

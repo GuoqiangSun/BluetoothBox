@@ -1,0 +1,81 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'org.greenrobot.greendao'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    defaultConfig {
+        applicationId rootProject.ext.applicationId
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    repositories {
+        flatDir {
+            dirs 'libs'
+        }
+    }
+
+}
+
+greendao {
+    //数据库版本号
+    schemaVersion rootProject.ext.schemaVersion
+    //设置DaoMaster、DaoSession、Dao包名
+    daoPackage rootProject.ext.daoPackage
+    //设置DaoMaster、DaoSession、Dao目录
+    targetGenDir rootProject.ext.targetGenDir
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile rootProject.ext.dependencies["appcompat-v7"]
+    compile rootProject.ext.dependencies["recyclerview-v7"]
+    compile rootProject.ext.dependencies["percent"]
+    compile rootProject.ext.dependencies["design"]
+    compile rootProject.ext.dependencies["constraint-layout"]
+    compile rootProject.ext.dependencies["butterknife"]
+    annotationProcessor rootProject.ext.dependencies["butterknife-compiler"]
+    compile rootProject.ext.dependencies["constraint-layout"]
+    compile rootProject.ext.dependencies["ibluz"]
+    compile rootProject.ext.dependencies["BaseRecyclerViewAdapterHelper"]
+    compile rootProject.ext.dependencies["eventbus"]
+    compile rootProject.ext.dependencies["logger"]
+    compile rootProject.ext.dependencies["greendao"]
+    compile 'com.github.mcxtzhang:SwipeDelMenuLayout:V1.3.0'
+    compile rootProject.ext.dependencies["greendao-generator"]
+    compile rootProject.ext.dependencies["utilcode"]
+    compile rootProject.ext.dependencies["gson"]
+    compile (rootProject.ext.dependencies["WheelPicker"]){
+        exclude group: 'com.android.support'
+    }
+    compile rootProject.ext.dependencies["android-gif-drawable"]
+//    compile 'com.github.jokermonn:permissions4m:2.1.2-lib'
+//    annotationProcessor 'com.github.jokermonn:permissions4m:2.1.2-processor'
+
+//    compile 'me.jessyan:autosize:0.9.1'
+    compile 'com.facebook.stetho:stetho:1.5.0'
+    compile 'com.google.guava:guava:23.5-android'
+    testCompile 'junit:junit:4.12'
+}

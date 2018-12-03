@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="false"
+    android:focusable="false"
+    android:focusableInTouchMode="false"
+    android:orientation="vertical"
+    android:paddingTop="15dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp">
+
+        <TextView
+            android:id="@+id/tv_index"
+            style="@style/BoldTextViewStyle"
+            android:layout_centerVertical="true"
+            android:text="001"
+            android:textSize="17sp" />
+
+        <ImageView
+            android:id="@+id/iv_delete"
+            android:layout_width="27dp"
+            android:layout_height="27dp"
+            android:layout_alignParentRight="true"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_flash_delete" />
+
+        <ImageView
+            android:id="@+id/iv_copy"
+            android:layout_width="31dp"
+            android:layout_height="26dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:layout_toLeftOf="@id/iv_delete"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_led_copy" />
+
+    </RelativeLayout>
+
+    <View
+        style="@style/viewLine"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:background="#6f6f6f" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="0dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <View
+            android:id="@+id/v_color_1"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@color/red" />
+
+        <View
+            android:id="@+id/v_color_2"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginLeft="10dp"
+            android:visibility="invisible" />
+
+        <RadioGroup
+            android:id="@+id/rg_flash"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rb_gradient"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_led_select"
+                android:button="@null"
+                android:checked="true"
+                android:padding="5dp"
+                android:text="@string/led_customer_gradient"
+                android:textSize="12sp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <RadioButton
+                android:id="@+id/rb_breath"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_led_select"
+                android:button="@null"
+                android:padding="5dp"
+                android:text="@string/led_customer_breath"
+                android:textSize="12sp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+
+            <RadioButton
+                android:id="@+id/rb_flash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_led_select"
+                android:button="@null"
+                android:padding="5dp"
+                android:text="@string/led_customer_flash"
+                android:textSize="12sp" />
+        </RadioGroup>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp">
+
+        <TextView
+            android:id="@+id/tv_on_title"
+            style="@style/BoldTextViewStyle"
+            android:layout_centerVertical="true"
+            android:ems="3"
+            android:text="ON"
+            android:textSize="12sp" />
+
+        <SeekBar
+            android:id="@+id/sb_on"
+            style="@style/SeekBarStyle"
+            android:layout_toRightOf="@id/tv_on_title"
+            android:max="90"
+            android:maxHeight="8dp"
+            android:thumb="@drawable/selector_led_customer_thumb" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/sb_on"
+            android:layout_below="@id/sb_on"
+            android:text="10"
+            android:textColor="@color/black"
+            android:textSize="12sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@id/sb_on"
+            android:layout_below="@id/sb_on"
+            android:text="100"
+            android:textColor="@color/black"
+            android:textSize="12sp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:id="@+id/tv_off_title"
+            style="@style/BoldTextViewStyle"
+            android:layout_centerVertical="true"
+            android:ems="3"
+            android:text="OFF"
+            android:textSize="12sp" />
+
+        <SeekBar
+            android:id="@+id/sb_off"
+            style="@style/SeekBarStyle"
+            android:layout_toRightOf="@id/tv_off_title"
+            android:max="90"
+            android:maxHeight="8dp"
+            android:thumb="@drawable/ic_led_customer_thumb" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/sb_off"
+            android:layout_below="@id/sb_off"
+            android:text="10"
+            android:textColor="@color/black"
+            android:textSize="12sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@id/sb_off"
+            android:layout_below="@id/sb_off"
+            android:text="100"
+            android:textColor="@color/black"
+            android:textSize="12sp" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/tv_bright_title"
+                style="@style/BoldTextViewStyle"
+                android:layout_centerVertical="true"
+                android:ems="3"
+                android:text="Bright"
+                android:textSize="12sp" />
+
+            <SeekBar
+                android:id="@+id/sb_bright"
+                style="@style/SeekBarStyle"
+                android:layout_marginRight="10dp"
+                android:layout_toRightOf="@id/tv_bright_title"
+                android:max="90"
+                android:maxHeight="4dp"
+                android:progressDrawable="@drawable/progress_led_bright"
+                android:thumb="@drawable/ic_led_customer_thumb" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/sb_bright"
+                android:layout_below="@id/sb_bright"
+                android:text="10"
+                android:textColor="@color/black"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignRight="@id/sb_bright"
+                android:layout_below="@id/sb_bright"
+                android:text="100"
+                android:textColor="@color/black"
+                android:textSize="12sp" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/BoldTextViewStyle"
+                android:ems="3"
+                android:text="Repeat"
+                android:textSize="12sp" />
+
+            <com.bazooka.bluetoothbox.ui.view.HorizontalPickerView
+                android:id="@+id/hpv_repeat"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:marqueeRepeatLimit="2"
+                android:overScrollMode="never"
+                android:textColor="@color/text_color"
+                android:background="@drawable/bg_repeat"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:textSize="12dp"
+                app:dividerSize="3dp"
+                app:sideItems="2"
+                app:values="@array/led_repeat" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/v_line"
+        style="@style/viewLine"
+        android:layout_marginTop="15dp"
+        android:background="#6f6f6f" />
+
+</LinearLayout>

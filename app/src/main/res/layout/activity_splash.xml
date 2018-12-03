@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_red"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/iv_logo_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="60dp"
+        android:alpha="1"
+        android:src="@drawable/ic_splash_logo" />
+
+
+    <com.bazooka.bluetoothbox.ui.view.AnimateText
+        android:id="@+id/tv_logo_3"
+        style="@style/WhiteBoldTextStyle"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="50dp"
+        android:textColor="@color/white"
+        android:textSize="18dp" />
+
+    <TextView
+        android:id="@+id/tv_logo_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/tv_logo_3"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        android:text="@string/logo1"
+        android:textColor="@color/white"
+        android:alpha="0"
+        android:textSize="18dp" />
+
+</RelativeLayout>

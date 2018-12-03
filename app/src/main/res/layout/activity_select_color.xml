@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/fl_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp">
+
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="60dp"
+            android:layout_height="35dp"
+            android:contentDescription="@null"
+            android:paddingBottom="5dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="10dp"
+            android:paddingTop="5dp"
+            android:src="@drawable/ic_back" />
+
+        <TextView
+            android:id="@+id/tv_pick_color"
+            style="@style/BoldTextViewStyle"
+            android:layout_width="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/select_color_activity_margin_left"
+            android:text="@string/pick_the_color"
+            android:textSize="15sp" />
+
+    </FrameLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/rl_color_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tv_preview"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/tv_preview"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp">
+
+        <FrameLayout
+            android:id="@+id/fl_selected_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_border_round_888"
+            android:paddingBottom="8dp"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingTop="8dp">
+
+            <View
+                android:id="@+id/v_selected_color"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:background="@color/colorAccent" />
+
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tv_selected_color_r"
+            style="@style/BoldTextViewStyle"
+            android:layout_marginLeft="30dp"
+            android:layout_toRightOf="@id/fl_selected_color"
+            android:text="R- 223" />
+
+        <TextView
+            android:id="@+id/tv_selected_color_g"
+            style="@style/BoldTextViewStyle"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="30dp"
+            android:layout_toRightOf="@id/fl_selected_color"
+            android:text="G- 223" />
+
+        <TextView
+            android:id="@+id/tv_selected_color_b"
+            style="@style/BoldTextViewStyle"
+            android:layout_alignBottom="@id/fl_selected_color"
+            android:layout_marginLeft="30dp"
+            android:layout_toRightOf="@id/fl_selected_color"
+            android:text="B- 223" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_preview"
+        style="@style/BoldTextViewStyle"
+        android:layout_width="match_parent"
+        android:layout_above="@id/rl_color_info"
+        android:layout_marginLeft="@dimen/select_color_activity_margin_left"
+        android:layout_marginRight="@dimen/select_color_activity_margin_left"
+        android:layout_marginTop="20dp"
+        android:text="@string/preview"
+        android:textSize="13sp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_color_selector"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/tv_preview"
+        android:layout_below="@id/fl_toolbar"
+        android:layout_marginLeft="@dimen/select_color_activity_margin_left"
+        android:layout_marginRight="@dimen/select_color_activity_margin_left"
+        android:layout_marginTop="22dp"
+        android:overScrollMode="never" />
+
+</RelativeLayout>

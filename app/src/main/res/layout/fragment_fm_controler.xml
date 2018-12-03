@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:seek="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:background="@drawable/bg_music_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingBottom="3dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="3dp">
+
+        <TextView
+            android:id="@+id/tv_fm_channel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:text="@string/fm_channel"
+            android:textColor="@color/white" />
+
+        <com.bazooka.bluetoothbox.ui.view.SimpleRulerView
+            android:id="@+id/ruler_fm"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            seek:highlightColor="#E56C00"
+            seek:intervalValue="0.1"
+            seek:maxValue="108.0"
+            seek:minValue="87.5"
+            seek:retainLength="1"
+            seek:rulerColor="@color/white"
+            seek:rulerLineWidth="1dp"
+            seek:textColor="@color/white" />
+
+    </LinearLayout>
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.2"
+        android:gravity="bottom">
+
+        <TableRow android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/iv_micro_pre"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_micro_pre" />
+
+            <ImageView
+                android:id="@+id/iv_micro_next"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_micro_next" />
+            <ImageView
+                android:paddingTop="6dp"
+                android:id="@+id/iv_fm_add"
+                android:layout_width="35dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:src="@drawable/fm_add" />
+
+            <ImageView
+                android:id="@+id/iv_scan"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_fm_scan" />
+
+            <ImageView
+                android:id="@+id/iv_pre"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_weight="1"
+                android:src="@drawable/selector_previous" />
+
+            <ImageView
+                android:id="@+id/iv_next"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_weight="1"
+                android:src="@drawable/selector_next" />
+        </TableRow>
+    </TableLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.8">
+
+        <TextView
+            android:id="@+id/tv_min"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="MIN"
+            android:textColor="#7c898d"
+            android:textSize="10sp" />
+
+        <TextView
+            android:id="@+id/tv_max"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="MAX"
+            android:textColor="#7c898d"
+            android:textSize="10sp" />
+
+        <SeekBar
+            android:id="@+id/sb_volume"
+            style="@style/SeekBarStyle"
+            android:layout_width="0dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_toLeftOf="@id/tv_max"
+            android:layout_toRightOf="@id/tv_min"
+            android:maxHeight="13dp"
+            android:progressDrawable="@drawable/progress_volume"
+            android:thumb="@drawable/ic_volume_thumb" />
+
+
+    </RelativeLayout>
+
+
+</LinearLayout>

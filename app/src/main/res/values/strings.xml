@@ -1,0 +1,91 @@
+<resources>
+
+    <!-- 蓝牙链接失败提示 -->
+    <string name="bluetooth_connect_fail_hint">Seems your PartyBar is not successfully paired</string>
+    <!-- 关闭连接提示 -->
+    <string name="close_connect_hint">Would you like to unpair your speaker?</string>
+    <string name="failed_to_connect_bluetooth">Oops!You failed to connect to PartyBar,please check out Bluetooth range,or try again!</string>
+    
+
+    <string name="app_name">BAZOOKA</string>
+    <string name="aux_mute">MUTE</string>
+    <string name="aux_playing">PLAYING</string>
+    <!--fm 频道-->
+    <string name="fm_channel">FM %.1f MHz</string>
+    <string name="SAVE">SAVE</string>
+
+    <string name="loading">Loading…</string>
+
+    <string name="no_usb">No USB flash found, please check out!</string>
+
+    <!--,please check your entry.-->
+    <string name="rgbRangeError">RGB value should be 0&#8211;255</string>
+
+    <string name="led_unopened">Please turn on the LEDs before tuning</string>
+    <string name="led_seq_name">Seq. Name:</string>
+    <string name="led_seq_name_too_long">Seq. name should be within 8 characters</string>
+    <string name="led_seq_name_too_short">Seq. name should be more than 2 characters</string>
+    <string name="led_seq_name_empty">Failed to rename, please enter a correct seq. name</string>
+    <string name="delete_seq_hint">Are you sure to delete the seq.?</string>
+    <string name="led_save_hint">Save As New Seq.</string>
+    <string name="led_customer_gradient">Gradient</string>
+    <string name="led_customer_breath">Breath</string>
+    <string name="led_customer_flash">Flash</string>
+    <string name="pick_the_color">Pick the color</string>
+    <string name="preview">Preview</string>
+    <string name="confirm">confirm</string>
+    <string name="seq_list">Seq. list</string>
+    <string name="title">TITLE</string>
+    <string name="upward">UPWARD</string>
+    <string name="downward">DOWNWARD</string>
+    <string name="date">DATE</string>
+    <string name="setting">Setting</string>
+    <string name="cancel">Cancel</string>
+    <string name="yes">Yes</string>
+    <string name="YES">YES</string>
+    <string name="retry">Retry</string>
+    <string name="bluetooth_info">Model:%1$s \nPBID:%2$s</string>
+
+    <string name="notice_device_connected">connected</string>
+    <string name="notice_device_connecting">connecting…</string>
+    <string name="notice_device_disconnected">disconnected</string>
+    <string name="notice_device_media_pairing">pairing…</string>
+    <string name="connection_connect_data_fail">Fail to connect for data. Please check your device.</string>
+    <string name="cur_send_flash_progress">Synchronising selected seq. list to speaker：\n%1$d / %2$d</string>
+
+    <string name="notice_usb_music_loading_message">Total number of songs: %1$d\nCurrent loading: %2$d</string>
+    <string name="seq_sync_hint">SYNC %1$d programs to  BAZOOKA speaker \n(MAC: %2$s)</string>
+    <string name="reset">Reset</string>
+    <string name="sync">Sync.</string>
+    <string name="upgrade">Upgrade</string>
+    <string name="sync_succeed">SYNC SUCCEED! \nSUCCEED:%1$d FAIL:%2$d</string>
+    <string name="okay">OKAY!</string>
+    <string name="name">Name</string>
+    <string name="menu">MENU</string>
+    <string name="bluetooth_model">Model: _________</string>
+    <string name="bluetooth_pbid">PBID: __________</string>
+    <string name="logo1">PartyBar Control Application</string>
+    <string name="logo2">LET THE PARTY BEGIN!</string>
+    <string name="pairing_successful">Pairing successful</string>
+    <string name="bluetooth_search_fail">Speaker not found, please check if the location permission is enabled and retry!</string>
+    <string name="bluetooth_connect_fail">Fail to pair the speaker, please retry</string>
+    <string name="rename_fail">Fail to rename, please enter a correct name</string>
+    <string name="rename">Rename</string>
+    <string name="switch_rename_demand">Name must between 1–10 characters long, only letters and numbers allowed</string>
+    <string name="led_flash_rename_demand">Name must between 2–8 characters long, only letters and numbers allowed</string>
+    <string name="seq_is_updated">Seq. is updated</string>
+    <string name="saved_as_a_new_seq">Saved as a new seq.</string>
+    <string name="seq_reset_hint">Are you sure to reset the seq. list as factory default setting?</string>
+    <string name="sync_hint">Synchronising selected seq. list to speaker</string>
+    <string name="scan_fm_channels_hint">Searching channels......</string>
+    <string name="fm_scanned_successfully">Scanned successfully</string>
+    <string name="fm_no_channels_found">No channels found</string>
+
+    <string name="upgrade_fail">Upgrade failed, please try again!</string>
+    <string name="upgrade_success">Upgrade successfully!</string>
+    <string name="being_upgrade">Being upgraded&#8230;</string>
+    <string name="select_upgrade_file">Please select the upgrade file!</string>
+    <!--升级文件选择错误-->
+    <string name="upgrade_file_select_error">Please select the upgraded file with a .bin suffix!</string>
+
+</resources>

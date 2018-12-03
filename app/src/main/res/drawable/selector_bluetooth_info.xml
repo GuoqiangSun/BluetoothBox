@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 首页 MainActivity 蓝牙连接信息字体颜色-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="@color/bluetoothInfoDisableColor" android:state_enabled="false"/>
+    <item android:color="@color/bluetoothInfoEnableColor"/>
+</selector>

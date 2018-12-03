@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_switch"
+    android:orientation="vertical"
+    tools:ignore="contentDescription">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:background="@drawable/icon_banner">
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="40dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center_vertical"
+            android:contentDescription="@null"
+            android:paddingBottom="5dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="5dp"
+            android:paddingTop="5dp"
+            android:src="@drawable/ic_back" />
+
+    </FrameLayout>
+
+    <android.support.percent.PercentRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
+        <TextView
+            android:id="@+id/et_name_1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:hint="@string/name"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            app:layout_widthPercent="33%"
+            android:gravity="center_vertical"/>
+
+        <FrameLayout
+            android:id="@+id/fl_switch_1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@id/et_name_1"
+            android:padding="25dp"
+            app:layout_widthPercent="33%">
+
+            <ImageView
+                android:id="@+id/iv_switch_1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:src="@drawable/selector_switch" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="1" />
+        </FrameLayout>
+
+        <ImageView
+            android:id="@+id/iv_power_1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@id/fl_switch_1"
+            android:padding="40dp"
+            android:src="@drawable/selector_power"
+            app:layout_widthPercent="34%" />
+
+    </android.support.percent.PercentRelativeLayout>
+
+    <android.support.percent.PercentRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
+        <TextView
+            android:id="@+id/et_name_2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:hint="@string/name"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            app:layout_widthPercent="33%"
+            android:gravity="center_vertical"/>
+
+        <FrameLayout
+            android:id="@+id/fl_switch_2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@id/et_name_2"
+            android:padding="25dp"
+            app:layout_widthPercent="33%">
+
+            <ImageView
+                android:id="@+id/iv_switch_2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:src="@drawable/selector_switch" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="2" />
+        </FrameLayout>
+
+        <ImageView
+            android:id="@+id/iv_power_2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@id/fl_switch_2"
+            android:padding="40dp"
+            android:src="@drawable/selector_power"
+            app:layout_widthPercent="34%" />
+
+    </android.support.percent.PercentRelativeLayout>
+
+    <android.support.percent.PercentRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
+        <TextView
+            android:id="@+id/et_name_3"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:hint="@string/name"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            app:layout_widthPercent="33%"
+            android:gravity="center_vertical"/>
+
+        <FrameLayout
+            android:id="@+id/fl_switch_3"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@id/et_name_3"
+            android:padding="25dp"
+            app:layout_widthPercent="33%">
+
+            <ImageView
+                android:id="@+id/iv_switch_3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:src="@drawable/selector_switch" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="3" />
+        </FrameLayout>
+
+        <ImageView
+            android:id="@+id/iv_power_3"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@id/fl_switch_3"
+            android:padding="40dp"
+            android:src="@drawable/selector_power"
+            app:layout_widthPercent="34%" />
+
+    </android.support.percent.PercentRelativeLayout>
+
+    <android.support.percent.PercentRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
+        <TextView
+            android:id="@+id/et_name_4"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:hint="@string/name"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            app:layout_widthPercent="33%"
+            android:gravity="center_vertical"/>
+
+        <FrameLayout
+            android:id="@+id/fl_switch_4"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@id/et_name_4"
+            android:padding="25dp"
+            app:layout_widthPercent="33%">
+
+            <ImageView
+                android:id="@+id/iv_switch_4"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:src="@drawable/selector_switch" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="4" />
+        </FrameLayout>
+
+        <ImageView
+            android:id="@+id/iv_power_4"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@id/fl_switch_4"
+            android:padding="40dp"
+            android:src="@drawable/selector_power"
+            app:layout_widthPercent="34%" />
+
+    </android.support.percent.PercentRelativeLayout>
+
+
+</LinearLayout>

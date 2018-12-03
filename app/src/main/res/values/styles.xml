@@ -1,0 +1,92 @@
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="NewApi">
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <!--@color/colorPrimaryDark-->
+        <item name="colorPrimaryDark">#000</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <!--RGB Dialog 输入框样式-->
+    <style name="DialogRgbEditTextStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">30dp</item>
+        <item name="android:inputType">number</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">right</item>
+        <item name="android:paddingRight">10dp</item>
+        <item name="android:maxLength">3</item>
+    </style>
+
+    <style name="viewLine">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">#8c8c8c</item>
+    </style>
+
+    <style name="BoldTextViewStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="WhiteBoldTextStyle" parent="BoldTextViewStyle">
+        <item name="android:textColor">@color/white</item>
+    </style>
+    <!--Dialog 提示文字样式-->
+    <style name="DialogTextStyle" parent="BoldTextViewStyle">
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <!--白色文字-->
+    <style name="WhiteTextStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="SeekBarStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingStart">0dp</item>
+        <item name="android:paddingEnd">0dp</item>
+        <item name="android:thumbOffset">0dp</item>
+        <item name="android:splitTrack">false</item>
+        <item name="android:background">@null</item>
+    </style>
+
+    <!--加载框样式-->
+    <style name="LoadingDialogStyle" parent="@android:style/Theme.Holo.Light.Dialog">
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <!--蓝牙搜索加载框样式-->
+    <style name="SearchDialogStyle" parent="@android:style/Theme.Holo.Light.Dialog.MinWidth">
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowBackground">@drawable/bg_search_dialog</item>
+    </style>
+
+    <!--添加颜色的 Dialog 样式-->
+    <style name="AddColorDialogStyle" parent="@android:style/Theme.Holo.Light.Dialog.MinWidth">
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowBackground">@drawable/bg_add_color_dialog</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <!--滚动条样式-->
+    <style name="ScrollBarStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:overScrollMode">never</item>
+        <item name="android:scrollbars">vertical</item>
+        <item name="android:scrollbarThumbVertical">@drawable/ic_scroll_bar</item>
+        <item name="android:scrollbarSize">5dp</item>
+    </style>
+</resources>
