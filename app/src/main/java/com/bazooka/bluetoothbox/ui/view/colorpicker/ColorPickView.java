@@ -189,6 +189,10 @@ public class ColorPickView extends View {
         return getLength(a.x, a.y, b.x, b.y);
     }
 
+    public void setRadius(int rudeRadius){
+        this.rudeRadius=rudeRadius;
+    }
+
     /**
      * @param centerPoint
      * @param eventPoint

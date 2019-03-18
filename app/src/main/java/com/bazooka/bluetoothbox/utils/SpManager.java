@@ -33,6 +33,11 @@ public class SpManager {
      * 当前连接的设备地址
      */
     private final String KEY_CURRENT_CONNECT_DEVICE_ADDRESS = "CURRENT_CONNECT_DEVICE_ADDRESS";
+
+    /**
+     * 当前连接设备名字
+     */
+    private final String KEY_CURRENT_CONNECT_DEVICE_NAME= "CURRENT_CONNECT_DEVICE_NAME";
     /**
      * 开关名称
      */
@@ -80,8 +85,17 @@ public class SpManager {
         spUtils.put(KEY_CURRENT_CONNECT_DEVICE_ADDRESS, address);
     }
 
+
     public String getConnectedDeviceAddress() {
         return spUtils.getString(KEY_CURRENT_CONNECT_DEVICE_ADDRESS, "");
+    }
+
+    public void saveDeviceName(String name){
+        spUtils.put(KEY_CURRENT_CONNECT_DEVICE_NAME, name);
+
+    }
+    public String getConnectDeviceNAME(){
+        return spUtils.getString(KEY_CURRENT_CONNECT_DEVICE_NAME, "");
     }
 
     public void saveCurrentVolume(int volume) {

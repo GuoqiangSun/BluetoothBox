@@ -5,7 +5,7 @@
     <!-- 关闭连接提示 -->
     <string name="close_connect_hint">Would you like to unpair your speaker?</string>
     <string name="failed_to_connect_bluetooth">Oops!You failed to connect to PartyBar,please check out Bluetooth range,or try again!</string>
-    
+
 
     <string name="app_name">BAZOOKA</string>
     <string name="aux_mute">MUTE</string>

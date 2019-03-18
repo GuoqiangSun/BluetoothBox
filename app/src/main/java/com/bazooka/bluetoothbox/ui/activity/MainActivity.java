@@ -7,6 +7,7 @@ import android.animation.ValueAnimator;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
@@ -28,6 +29,7 @@ import com.bazooka.bluetoothbox.cache.db.SendSuccessFlashHelper;
 import com.bazooka.bluetoothbox.cache.db.entity.LedFlash;
 import com.bazooka.bluetoothbox.cache.db.entity.SendSuccessFlash;
 import com.bazooka.bluetoothbox.listener.NoDoubleClickListener;
+import com.bazooka.bluetoothbox.ui.adapter.FmChannelAdapter;
 import com.bazooka.bluetoothbox.ui.dialog.BluetoothSearchDialog;
 import com.bazooka.bluetoothbox.ui.dialog.PromptDialog;
 import com.bazooka.bluetoothbox.ui.dialog.PromptDialogV2;
@@ -168,6 +170,8 @@ public class MainActivity extends BaseActivity {
             }
         }, 100);
 
+////     //todo  测试
+//        SpManager.getInstance().saveDeviceName("BAZ-G2-FM");
 
     }
 
@@ -175,7 +179,6 @@ public class MainActivity extends BaseActivity {
     public void initView() {
         tvBluetoothInfo.setText(getString(R.string.bluetooth_info, "______", "_______"));
         saveDefaultFlash();
-
     }
 
     private void initHandler() {
@@ -235,6 +238,7 @@ public class MainActivity extends BaseActivity {
         } else {
             isConnect = true;
             SpManager.getInstance().saveDeviceAddress(connectedDevice.getAddress());
+            SpManager.getInstance().saveDeviceName(connectedDevice.getName());
         }
 
     }
@@ -376,6 +380,7 @@ public class MainActivity extends BaseActivity {
             mScaleAnimator.end();
             connectedDevice = device;
             SpManager.getInstance().saveDeviceAddress(device.getAddress());
+            SpManager.getInstance().saveDeviceName(device.getName());
             mBluzManagerUtils.createBluzManager(bluzDeviceUtils.getBluzDevice());
             ivPhone.setSelected(true);
             ivBluetoothState.setSelected(true);
@@ -385,12 +390,22 @@ public class MainActivity extends BaseActivity {
                 btnAux.setVisibility(View.GONE);
                 btnSwitch.setVisibility(View.GONE);
                 btnFm.setVisibility(View.VISIBLE);
-            }
-            if (device.getName().equals("BAZ-G2")) {
-                btnFm.setVisibility(View.GONE);
+            }else if (device.getName().equals("BAZ-G2")) {
                 btnAux.setVisibility(View.VISIBLE);
                 btnSwitch.setVisibility(View.VISIBLE);
+                btnFm.setVisibility(View.GONE);
             }
+
+//            if (device.getName().contains("FM")){
+//                btnAux.setVisibility(View.GONE);
+//                btnSwitch.setVisibility(View.GONE);
+//                btnFm.setVisibility(View.VISIBLE);
+//            }
+//            else {
+//                btnAux.setVisibility(View.VISIBLE);
+//                btnSwitch.setVisibility(View.VISIBLE);
+//                btnFm.setVisibility(View.GONE);
+//            }
 
         } else {
             mScaleAnimator.start();

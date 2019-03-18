@@ -27,12 +27,15 @@ public class FmChannelAdapter extends BaseQuickAdapter<FmChannelCache, BaseViewH
     public FmChannelAdapter(Context context, @Nullable List<FmChannelCache> data) {
         super(R.layout.item_fm, data);
         mContext = context;
+
     }
 
     @Override
     protected void convert(BaseViewHolder helper, FmChannelCache item) {
-        helper.setText(R.id.fm_name, item.getName())
-                .setText(R.id.fm_channel, mContext.getString(R.string.fm_channel, item.getChannel() / 1000f));
+        int layoutPosition = helper.getLayoutPosition();
+        helper.setText(R.id.fm_name,"ST "+String.valueOf(layoutPosition));
+               helper.setText(R.id.fm_channel, mContext.getString(R.string.fm_channel, item.getChannel() / 1000f));
+
         helper.getView(R.id.fm_delete).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {//刪除該選項

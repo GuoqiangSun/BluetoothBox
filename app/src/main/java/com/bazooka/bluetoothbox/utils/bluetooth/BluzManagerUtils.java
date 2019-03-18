@@ -5,6 +5,7 @@ import com.actions.ibluz.factory.IBluzDevice;
 import com.actions.ibluz.manager.BluzManager;
 import com.actions.ibluz.manager.BluzManagerData;
 import com.actions.ibluz.manager.IAuxManager;
+import com.actions.ibluz.manager.IBluzManager;
 import com.actions.ibluz.manager.IRadioManager;
 import com.bazooka.bluetoothbox.BuildConfig;
 import com.bazooka.bluetoothbox.application.App;
@@ -268,7 +269,10 @@ public class BluzManagerUtils {
         }
         mBluzManager.setOnCustomCommandListener(listener);
     }
+    public IBluzManager getIBluzManager() {
 
+        return mBluzManager;
+    }
     /**
      * 打开、关闭 LED 灯
      */

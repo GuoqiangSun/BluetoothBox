@@ -3,6 +3,7 @@ package com.bazooka.bluetoothbox.ui.fragment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import com.bazooka.bluetoothbox.base.fragment.BaseFragment;
 import com.bazooka.bluetoothbox.cache.db.FmChannelCacheHelper;
 import com.bazooka.bluetoothbox.cache.db.entity.FmChannelCache;
 import com.bazooka.bluetoothbox.listener.FmItemDleteListener;
+import com.bazooka.bluetoothbox.listener.FmModeCallback;
 import com.bazooka.bluetoothbox.ui.adapter.FmChannelAdapter;
 
 import java.util.ArrayList;
@@ -26,7 +28,7 @@ import butterknife.BindView;
  * 作用：FM 列表面
  */
 public class FMListFragment extends BaseFragment {
-
+    private String TAG = "FMListFragment";
     private static final String ATTR_CHANNELS = "FMListFragment.Channels";
     private boolean isPlaying = true;
     private OnChannelClickListener onChannelClickListener;
@@ -36,12 +38,14 @@ public class FMListFragment extends BaseFragment {
 
     private FmChannelAdapter adapter;
     private List<FmChannelCache> mFmChannels = new ArrayList<>();
+    private static FmModeCallback mCallback;
 
-    public static FMListFragment newInstance(List<FmChannelCache> fmChannelCaches){
+    public static FMListFragment newInstance(List<FmChannelCache> fmChannelCaches, FmModeCallback callback) {
         FMListFragment fragment = new FMListFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(ATTR_CHANNELS, new ArrayList<>(fmChannelCaches));
         fragment.setArguments(bundle);
+        mCallback = callback;
         return fragment;
     }
 
@@ -54,7 +58,7 @@ public class FMListFragment extends BaseFragment {
     @Override
     public void initData() {
         List<FmChannelCache> channels = getArguments().getParcelableArrayList(ATTR_CHANNELS);
-        if(channels != null) {
+        if (channels != null) {
             mFmChannels.addAll(channels);
         }
         adapter = new FmChannelAdapter(getContext(), mFmChannels);
@@ -65,8 +69,14 @@ public class FMListFragment extends BaseFragment {
                 FmChannelCache channelCache = mFmChannels.get(position);
                 FmChannelCacheHelper.getInstance().deleteCache(channelCache);
                 mFmChannels.remove(position);
+                //回调给Activity
+                mCallback.deleteCallback(position);
+
                 adapter.notifyDataSetChanged();
-                //删除数据库记录
+
+                Log.i(TAG, "position = " + position);
+                Log.i(TAG, "mFmChannels = " + mFmChannels.size());
+
             }
         });
     }
@@ -79,16 +89,21 @@ public class FMListFragment extends BaseFragment {
         rvMusicList.setAdapter(adapter);
     }
 
-    public void setFmChannels(List<FmChannelCache> fmChannels){
-        mFmChannels.clear();
+    public void setFmChannels(List<FmChannelCache> fmChannels, Boolean isClear) {
+        if (isClear) {
+            mFmChannels.clear();
+        }
         mFmChannels.addAll(fmChannels);
         adapter.notifyDataSetChanged();
+    }
+    public  List<FmChannelCache> getFmChannels (){
+        return mFmChannels;
     }
 
     @Override
     public void addViewListener() {
         adapter.setOnItemClickListener((adapter1, view, position) -> {
-            if(onChannelClickListener != null) {
+            if (onChannelClickListener != null) {
                 onChannelClickListener.onChannelClick(mFmChannels.get(position).getChannel());
             }
         });

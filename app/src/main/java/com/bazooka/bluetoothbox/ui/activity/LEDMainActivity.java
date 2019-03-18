@@ -1,12 +1,15 @@
 package com.bazooka.bluetoothbox.ui.activity;
 
 import android.app.ProgressDialog;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.bazooka.bluetoothbox.R;
@@ -29,9 +32,11 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.qqtheme.framework.picker.NumberPicker;
 
@@ -70,6 +75,32 @@ public class LEDMainActivity extends BaseActivity implements SeekBar.OnSeekBarCh
     TextView tvModeName;
     @BindView(R.id.fl_color_picker)
     FrameLayout flColorPicker;
+    @BindView(R.id.iv_select_color_background)
+    ImageView ivSelectColorBackground;
+    @BindView(R.id.iv_brightness)
+    ImageView ivBrightness;
+    @BindView(R.id.iv_speed)
+    ImageView ivSpeed;
+    @BindView(R.id.iv_fm_version_yellow)
+    ImageView ivFmVersionYellow;
+    @BindView(R.id.iv_fm_version_purple)
+    ImageView ivFmVersionPurple;
+    @BindView(R.id.iv_fm_version_blue)
+    ImageView ivFmVersionBlue;
+    @BindView(R.id.iv_fm_version_red)
+    ImageView ivFmVersionRed;
+    @BindView(R.id.iv_fm_version_orange)
+    ImageView ivFmVersionOrange;
+    @BindView(R.id.iv_fm_version_mazarine)
+    ImageView ivFmVersionMazarine;
+    @BindView(R.id.iv_fm_version_green)
+    ImageView ivFmVersionGreen;
+    @BindView(R.id.iv_fm_version_dark_yellow)
+    ImageView ivFmVersionDarkYellow;
+    @BindView(R.id.iv_fm_version_emerald)
+    ImageView ivFmVersionEmerald;
+    @BindView(R.id.tl_select_color)
+    TableLayout tlSelectColor;
 
     private ProgressDialog progressDialog;
     private BluzManagerUtils mBluzManagerUtils;
@@ -106,6 +137,7 @@ public class LEDMainActivity extends BaseActivity implements SeekBar.OnSeekBarCh
 
         if (sendSuccessFlasheList.size() > 0) {
             tvModeName.setText(sendSuccessFlasheList.get(0).getFlashName());
+
         }
 
 
@@ -117,9 +149,17 @@ public class LEDMainActivity extends BaseActivity implements SeekBar.OnSeekBarCh
         int displayHeight = CalculateUtils.getDisplayHeight();//获取屏幕高度(px)
         int displayWidth = (int) (CalculateUtils.getDisplayWidth() * 3.0f / 4);//屏幕宽度的3/4
         int colorPickerWidth = Math.min(displayWidth, displayHeight / 2);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(colorPickerWidth, colorPickerWidth);
-        flColorPicker.setLayoutParams(params);
-        colorPickerView.setBigCircle(colorPickerWidth / 2 - ConvertUtils.dp2px(17));//减去边框宽度，大致为17dp
+        if (!SpManager.getInstance().getConnectDeviceNAME().equals("") && SpManager.getInstance().getConnectDeviceNAME().equals("BAZ-G2-FM")) {
+            colorPickerView.setVisibility(View.GONE);
+            ivSelectColorBackground.setVisibility(View.GONE);
+            tlSelectColor.setVisibility(View.VISIBLE);
+
+        } else {
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(colorPickerWidth, colorPickerWidth);
+            flColorPicker.setLayoutParams(params);
+            colorPickerView.setBigCircle(colorPickerWidth / 2 - ConvertUtils.dp2px(17));//减去边框宽度，大致为17dp
+//            colorPickerView.setBigCircle(colorPickerWidth / 2 - ConvertUtils.dp2px(30));
+        }
 
 
         mRPicker = new NumberPicker(this);
@@ -179,6 +219,22 @@ public class LEDMainActivity extends BaseActivity implements SeekBar.OnSeekBarCh
         sbBrightness.setProgress(ledBrightness);
         sbSpeed.setProgress(ledSpeed);
 
+        if (!SpManager.getInstance().getConnectDeviceNAME().equals("") && SpManager.getInstance().getConnectDeviceNAME().equals("BAZ-G2-FM")) {
+            llRgbInfo.setVisibility(View.GONE);
+            ivMenu.setVisibility(View.GONE);
+            if (sendSuccessFlasheList != null) {
+                Iterator<SendSuccessFlash> iterator = sendSuccessFlasheList.iterator();
+                while (iterator.hasNext()) {
+                    SendSuccessFlash next = iterator.next();
+                    if (next.getFlashName().startsWith("FLASH")) {
+                        iterator.remove();
+                    }
+                }
+
+            }
+        }
+
+//        SpManager.getInstance().saveDeviceName("BAZ-G2");
     }
 
     @Override
@@ -240,7 +296,7 @@ public class LEDMainActivity extends BaseActivity implements SeekBar.OnSeekBarCh
 
 
     @OnClick({R.id.iv_demo, R.id.iv_switch, R.id.iv_menu, R.id.iv_back,
-            R.id.iv_mode_left, R.id.iv_mode_right})
+            R.id.iv_mode_left, R.id.iv_mode_right, R.id.iv_fm_version_yellow, R.id.iv_fm_version_purple, R.id.iv_fm_version_blue, R.id.iv_fm_version_red, R.id.iv_fm_version_orange, R.id.iv_fm_version_mazarine, R.id.iv_fm_version_green, R.id.iv_fm_version_dark_yellow, R.id.iv_fm_version_emerald})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             //DEMO
@@ -297,6 +353,42 @@ public class LEDMainActivity extends BaseActivity implements SeekBar.OnSeekBarCh
                     mBluzManagerUtils.queryLedAndLightState();
                 }
                 break;
+            case R.id.iv_fm_version_yellow:
+                mBluzManagerUtils.sendColor(255, 255, 0);
+                Log.i("name", "1111");
+                break;
+            case R.id.iv_fm_version_purple:
+                mBluzManagerUtils.sendColor(255, 0, 255);
+                Log.i("name", "1111");
+                break;
+            case R.id.iv_fm_version_blue:
+                mBluzManagerUtils.sendColor(0, 255, 255);
+                Log.i("name", "1111");
+                break;
+            case R.id.iv_fm_version_red:
+                mBluzManagerUtils.sendColor(255, 40, 40);
+                Log.i("name", "1111");
+                break;
+            case R.id.iv_fm_version_orange:
+                mBluzManagerUtils.sendColor(255, 100, 50);
+                Log.i("name", "1111");
+                break;
+            case R.id.iv_fm_version_mazarine:
+                mBluzManagerUtils.sendColor(65, 150, 255);
+                Log.i("name", "1111");
+                break;
+            case R.id.iv_fm_version_green:
+                mBluzManagerUtils.sendColor(0, 255, 100);
+                Log.i("name", "1111");
+                break;
+            case R.id.iv_fm_version_dark_yellow:
+                mBluzManagerUtils.sendColor(255, 235, 53);
+                Log.i("name", "1111");
+                break;
+            case R.id.iv_fm_version_emerald:
+                mBluzManagerUtils.sendColor(65, 255, 70);
+                Log.i("name", "1111");
+                break;
             default:
                 break;
         }
@@ -330,6 +422,7 @@ public class LEDMainActivity extends BaseActivity implements SeekBar.OnSeekBarCh
 
     /**
      * 闪法发送完成
+     *
      * @param event
      */
     @SuppressWarnings("unused")
@@ -391,5 +484,13 @@ public class LEDMainActivity extends BaseActivity implements SeekBar.OnSeekBarCh
         if (colorPickerView != null) {
             colorPickerView.recycle();
         }
+    }
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
     }
 }

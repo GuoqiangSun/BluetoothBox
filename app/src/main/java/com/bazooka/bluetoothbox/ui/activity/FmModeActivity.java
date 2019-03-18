@@ -2,6 +2,7 @@ package com.bazooka.bluetoothbox.ui.activity;
 
 import android.app.ProgressDialog;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 
 import com.actions.ibluz.manager.BluzManagerData;
 import com.actions.ibluz.manager.IRadioManager;
@@ -10,6 +11,7 @@ import com.bazooka.bluetoothbox.base.activity.MusicCommonActivity;
 import com.bazooka.bluetoothbox.bean.event.ModeChangedEvent;
 import com.bazooka.bluetoothbox.cache.db.FmChannelCacheHelper;
 import com.bazooka.bluetoothbox.cache.db.entity.FmChannelCache;
+import com.bazooka.bluetoothbox.listener.FmModeCallback;
 import com.bazooka.bluetoothbox.ui.dialog.PromptDialogV2;
 import com.bazooka.bluetoothbox.ui.fragment.FMListFragment;
 import com.bazooka.bluetoothbox.ui.fragment.FmControlFragment;
@@ -25,6 +27,8 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -34,8 +38,8 @@ import java.util.List;
  * 作用：FM播放界面
  */
 
-public class FmModeActivity extends MusicCommonActivity {
-
+public class FmModeActivity extends MusicCommonActivity implements FmModeCallback {
+    private String TAG = "FmModeActivity";
     private boolean canScan = false;
     private boolean isScan = false;
     private List<FmChannelCache> fmChannels = new ArrayList<>();
@@ -54,6 +58,8 @@ public class FmModeActivity extends MusicCommonActivity {
     private int currPlayChannel = 87500;
     private PromptDialogV2 hintDialog;
     private int channels;
+
+    private boolean addClick = false;
 
     @Override
     public void initData() {
@@ -74,10 +80,10 @@ public class FmModeActivity extends MusicCommonActivity {
         fmChannels.addAll(FmChannelCacheHelper.getInstance().getAllCacheChannel());
         fragments = new ArrayList<>();
         fragments.add(fmControlFragment = new FmControlFragment());
-        fragments.add(fmListFragment = FMListFragment.newInstance(fmChannels));
+        fragments.add(fmListFragment = FMListFragment.newInstance(fmChannels, this));
 
         mProgressDialog = new ProgressDialog(mContext);
-        channels=fmControlFragment.getCurrentChannel();
+        channels = fmControlFragment.getCurrentChannel();
         mBluzManagerUtils = BluzManagerUtils.getInstance();
         if (mBluzManagerUtils.getCurrentMode() == BluzManagerData.FuncMode.RADIO) {
             initRadioManager();
@@ -85,7 +91,7 @@ public class FmModeActivity extends MusicCommonActivity {
             mProgressDialog.setMessage(getString(R.string.loading));
             mBluzManagerUtils.setMode(BluzManagerData.FuncMode.RADIO);
         }
-
+        Log.i(TAG, "fmChannels = " + fmChannels.size());
     }
 
     @Override
@@ -202,11 +208,23 @@ public class FmModeActivity extends MusicCommonActivity {
                     hintDialog.show();
                     return;
                 }
+
+                //判断是否添加重复数据
+                for (int i = 0; i < fmChannels.size(); i++) {
+                    if (fmChannels.get(i).getChannel() == channels) {
+                        return;
+                    }
+                }
+
                 int size = fmChannels.size();
                 //添加数据库记录
                 List<FmChannelCache> fmChannelCaches = FmChannelCacheHelper.getInstance().addCache(size, channels);
                 fmChannels.addAll(fmChannelCaches);//添加到列表中
-                fmListFragment.setFmChannels(fmChannelCaches);
+                //排序
+                Collections.sort(fmChannels, new sortByFmChannles());
+                fmListFragment.setFmChannels(fmChannels, true);
+
+                Log.i(TAG, "fmChannels = " + fmChannels.size());
 
             }
         });
@@ -214,7 +232,7 @@ public class FmModeActivity extends MusicCommonActivity {
         fmControlFragment.setOnUiChangeListener(new FmControlFragment.OnUiChangeListener() {
             @Override
             public void onChannelChangeFinished(float value) {
-                 channels = (int) (value * 1000);
+                channels = (int) (value * 1000);
                 if (mRadioManager != null) {
                     mRadioManager.select(channels);
                 }
@@ -231,8 +249,13 @@ public class FmModeActivity extends MusicCommonActivity {
                 hintDialog.show();
                 return;
             }
-            fmControlFragment.setCurrentChannel(currPlayChannel);
-            mRadioManager.select(channel);
+            Log.i(TAG, "selectChannel = " + channel);
+            fmControlFragment.setCurrentChannel(channel);
+
+            if (mRadioManager != null) {
+                mRadioManager.select(channel);
+            }
+
         });
 
 
@@ -284,7 +307,7 @@ public class FmModeActivity extends MusicCommonActivity {
             List<FmChannelCache> channels = FmChannelCacheHelper.getInstance().addCache(list, true);
             fmChannels.clear();
             fmChannels.addAll(channels);
-            fmListFragment.setFmChannels(channels);
+            fmListFragment.setFmChannels(channels, true);
             isScan = false;
             if (mProgressDialog.isShowing()) {
                 mProgressDialog.dismiss();
@@ -323,6 +346,15 @@ public class FmModeActivity extends MusicCommonActivity {
         }
 
         return 0;
+    }
+
+    @Override
+    public void deleteCallback(int position) {
+        if (fmChannels != null) {
+            fmChannels.remove(position);
+        }
+        Log.i(TAG, "删除第" + position + "个");
+        Log.i(TAG, "删除后的大小" + fmChannels.size());
     }
 
     public class CurrentChannel {
@@ -368,5 +400,22 @@ public class FmModeActivity extends MusicCommonActivity {
             Logger.d(currPlayChannel);
             EventBus.getDefault().postSticky(new CurrentChannel(currPlayChannel));
         });
+    }
+
+    /**
+     * 对集合进行排序
+     */
+    class sortByFmChannles implements Comparator {
+
+        @Override
+        public int compare(Object o1, Object o2) {
+            FmChannelCache fm1 = (FmChannelCache) o1;
+            FmChannelCache fm2 = (FmChannelCache) o2;
+            if (fm1.getChannel() > fm2.getChannel()) {
+                return 1;
+            } else {
+                return -1;
+            }
+        }
     }
 }
