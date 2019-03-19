@@ -355,39 +355,30 @@ public class LEDMainActivity extends BaseActivity implements SeekBar.OnSeekBarCh
                 break;
             case R.id.iv_fm_version_yellow:
                 mBluzManagerUtils.sendColor(255, 255, 0);
-                Log.i("name", "1111");
                 break;
             case R.id.iv_fm_version_purple:
                 mBluzManagerUtils.sendColor(255, 0, 255);
-                Log.i("name", "1111");
                 break;
             case R.id.iv_fm_version_blue:
                 mBluzManagerUtils.sendColor(0, 255, 255);
-                Log.i("name", "1111");
                 break;
             case R.id.iv_fm_version_red:
                 mBluzManagerUtils.sendColor(255, 40, 40);
-                Log.i("name", "1111");
                 break;
             case R.id.iv_fm_version_orange:
                 mBluzManagerUtils.sendColor(255, 100, 50);
-                Log.i("name", "1111");
                 break;
             case R.id.iv_fm_version_mazarine:
                 mBluzManagerUtils.sendColor(65, 150, 255);
-                Log.i("name", "1111");
                 break;
             case R.id.iv_fm_version_green:
                 mBluzManagerUtils.sendColor(0, 255, 100);
-                Log.i("name", "1111");
                 break;
             case R.id.iv_fm_version_dark_yellow:
                 mBluzManagerUtils.sendColor(255, 235, 53);
-                Log.i("name", "1111");
                 break;
             case R.id.iv_fm_version_emerald:
                 mBluzManagerUtils.sendColor(65, 255, 70);
-                Log.i("name", "1111");
                 break;
             default:
                 break;
@@ -487,10 +478,5 @@ public class LEDMainActivity extends BaseActivity implements SeekBar.OnSeekBarCh
     }
 
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
-    }
+
 }

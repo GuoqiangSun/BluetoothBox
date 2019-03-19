@@ -304,6 +304,9 @@ public class MainActivity extends BaseActivity {
 
         bluzDeviceUtils.setOnConnectionListener();
 
+        if (connectedDevice==null){
+            SpManager.getInstance().saveDeviceName("BAZ-G2"); //默认
+        }
 //
     }
 
@@ -390,22 +393,13 @@ public class MainActivity extends BaseActivity {
                 btnAux.setVisibility(View.GONE);
                 btnSwitch.setVisibility(View.GONE);
                 btnFm.setVisibility(View.VISIBLE);
-            }else if (device.getName().equals("BAZ-G2")) {
-                btnAux.setVisibility(View.VISIBLE);
-                btnSwitch.setVisibility(View.VISIBLE);
-                btnFm.setVisibility(View.GONE);
             }
-
-//            if (device.getName().contains("FM")){
-//                btnAux.setVisibility(View.GONE);
-//                btnSwitch.setVisibility(View.GONE);
-//                btnFm.setVisibility(View.VISIBLE);
-//            }
-//            else {
+//            else if (device.getName().equals("BAZ-G2")) {
 //                btnAux.setVisibility(View.VISIBLE);
 //                btnSwitch.setVisibility(View.VISIBLE);
 //                btnFm.setVisibility(View.GONE);
 //            }
+
 
         } else {
             mScaleAnimator.start();
@@ -417,6 +411,10 @@ public class MainActivity extends BaseActivity {
             ivBluetoothState.setSelected(false);
             mScaleAnimator.start();
             tvBluetoothInfo.setText(getString(R.string.bluetooth_info, "______", "_______"));
+
+            btnAux.setVisibility(View.VISIBLE);
+            btnSwitch.setVisibility(View.VISIBLE);
+            btnFm.setVisibility(View.GONE);
             if (isUserDisconnect) {
                 //如果是用户主动断开，不做处理，只将 isUserDisconnect 赋值为 false
                 isUserDisconnect = false;
