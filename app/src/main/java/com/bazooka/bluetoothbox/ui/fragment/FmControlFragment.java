@@ -1,6 +1,7 @@
 package com.bazooka.bluetoothbox.ui.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +21,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 
 /**
  * @author 尹晓童
@@ -50,7 +49,6 @@ public class FmControlFragment extends BaseFragment {
     SeekBar sbVolume;
     @BindView(R.id.iv_fm_add)
     ImageView ivFmAdd;
-
 
 
     private OnButtonClickListener mOnButtonClickListener;
@@ -124,7 +122,7 @@ public class FmControlFragment extends BaseFragment {
     }
 
 
-    @OnClick({R.id.iv_scan, R.id.iv_pre, R.id.iv_next, R.id.iv_micro_pre, R.id.iv_micro_next,R.id.iv_fm_add})
+    @OnClick({R.id.iv_scan, R.id.iv_pre, R.id.iv_next, R.id.iv_micro_pre, R.id.iv_micro_next, R.id.iv_fm_add})
     public void onViewClicked(View view) {
         if (mOnButtonClickListener != null) {
             switch (view.getId()) {
@@ -151,13 +149,28 @@ public class FmControlFragment extends BaseFragment {
         }
     }
 
+    public final float getMinValue() {
+        return rulerFm.getMinValue();
+    }
+
+    public final float getMaxValue() {
+        return rulerFm.getMaxValue();
+    }
+
     public void setCurrentChannel(int channel) {
+        float selectedValue = channel / 1000f;
+        if (selectedValue < rulerFm.getMinValue() || selectedValue > rulerFm.getMaxValue()) {
+            Log.e("FmModeActivity", "expected selectedValue in ["
+                    + rulerFm.getMinValue() + "," + rulerFm.getMaxValue()
+                    + "],but the selectedValue is " + selectedValue);
+            return;
+        }
         mCurChannel = channel;
-        rulerFm.setSelectedValue(channel / 1000f);
+        rulerFm.setSelectedValue(selectedValue);
         tvFmChannel.setText(getString(R.string.fm_channel, mCurChannel / 1000f));
     }
 
-    public int getCurrentChannel(){
+    public int getCurrentChannel() {
         return mCurChannel;
     }
 

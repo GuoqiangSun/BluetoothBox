@@ -8,8 +8,8 @@ ext {
             applicationId = "com.bazooka.bluetoothbox",
             minSdkVersion = 15,
             targetSdkVersion = 22,
-            versionCode =18,
-            versionName = '1.8'
+            versionCode =21,
+            versionName = '2.1'
     ]
 
     greendao = [

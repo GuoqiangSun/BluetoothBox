@@ -2,10 +2,7 @@ package com.bazooka.bluetoothbox.application;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.os.Bundle;
 
@@ -23,9 +20,9 @@ import org.greenrobot.greendao.query.QueryBuilder;
 
 /**
  * @author 尹晓童
- *         邮箱：yinxtno1@yeah.net
- *         时间：2017/8/31
- *         作用：
+ * 邮箱：yinxtno1@yeah.net
+ * 时间：2017/8/31
+ * 作用：
  */
 public class App extends Application {
 
@@ -59,13 +56,15 @@ public class App extends Application {
         Stetho.initializeWithDefaults(this);
 
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        //返回特定流的最大音量指数
-        maxMusicVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        if (mAudioManager != null) {
+            //返回特定流的最大音量指数
+            maxMusicVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        }
 
         registerActivityLifecycleCallbacks(activityLifecycleCallbacks);
 
         //GreenDao 相关
-        QueryBuilder.LOG_SQL = BuildConfig.DEBUG ;
+        QueryBuilder.LOG_SQL = BuildConfig.DEBUG;
         QueryBuilder.LOG_VALUES = BuildConfig.DEBUG;
     }
 
@@ -117,7 +116,6 @@ public class App extends Application {
 
         }
     };
-
 
 
 }
