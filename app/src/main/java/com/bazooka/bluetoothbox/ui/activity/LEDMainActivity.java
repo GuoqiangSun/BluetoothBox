@@ -1,8 +1,6 @@
 package com.bazooka.bluetoothbox.ui.activity;
 
 import android.app.ProgressDialog;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -36,7 +34,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.qqtheme.framework.picker.NumberPicker;
 
@@ -294,6 +291,7 @@ public class LEDMainActivity extends BaseActivity implements SeekBar.OnSeekBarCh
         sbSpeed.setOnSeekBarChangeListener(this);
     }
 
+    private ImageView mLastClickImg;
 
     @OnClick({R.id.iv_demo, R.id.iv_switch, R.id.iv_menu, R.id.iv_back,
             R.id.iv_mode_left, R.id.iv_mode_right, R.id.iv_fm_version_yellow, R.id.iv_fm_version_purple, R.id.iv_fm_version_blue, R.id.iv_fm_version_red, R.id.iv_fm_version_orange, R.id.iv_fm_version_mazarine, R.id.iv_fm_version_green, R.id.iv_fm_version_dark_yellow, R.id.iv_fm_version_emerald})
@@ -354,31 +352,76 @@ public class LEDMainActivity extends BaseActivity implements SeekBar.OnSeekBarCh
                 }
                 break;
             case R.id.iv_fm_version_yellow:
+                ivFmVersionYellow.setBackgroundResource(R.drawable.fm_version_select_n);
+                if (mLastClickImg != null) {
+                    mLastClickImg.setBackgroundResource(0);
+                }
                 mBluzManagerUtils.sendColor(255, 255, 0);
+                mLastClickImg = ivFmVersionYellow;
                 break;
             case R.id.iv_fm_version_purple:
+                ivFmVersionPurple.setBackgroundResource(R.drawable.fm_version_select_n);
+                if (mLastClickImg != null) {
+                    mLastClickImg.setBackgroundResource(0);
+                }
                 mBluzManagerUtils.sendColor(255, 0, 255);
+                mLastClickImg = ivFmVersionPurple;
                 break;
             case R.id.iv_fm_version_blue:
+                ivFmVersionBlue.setBackgroundResource(R.drawable.fm_version_select_n);
+                if (mLastClickImg != null) {
+                    mLastClickImg.setBackgroundResource(0);
+                }
                 mBluzManagerUtils.sendColor(0, 255, 255);
+                mLastClickImg = ivFmVersionBlue;
                 break;
             case R.id.iv_fm_version_red:
+                ivFmVersionRed.setBackgroundResource(R.drawable.fm_version_select_n);
+                if (mLastClickImg != null) {
+                    mLastClickImg.setBackgroundResource(0);
+                }
                 mBluzManagerUtils.sendColor(255, 40, 40);
+                mLastClickImg = ivFmVersionRed;
                 break;
             case R.id.iv_fm_version_orange:
+                ivFmVersionOrange.setBackgroundResource(R.drawable.fm_version_select_n);
+                if (mLastClickImg != null) {
+                    mLastClickImg.setBackgroundResource(0);
+                }
                 mBluzManagerUtils.sendColor(255, 100, 50);
+                mLastClickImg = ivFmVersionOrange;
                 break;
             case R.id.iv_fm_version_mazarine:
+                ivFmVersionMazarine.setBackgroundResource(R.drawable.fm_version_select_n);
+                if (mLastClickImg != null) {
+                    mLastClickImg.setBackgroundResource(0);
+                }
                 mBluzManagerUtils.sendColor(65, 150, 255);
+                mLastClickImg = ivFmVersionMazarine;
                 break;
             case R.id.iv_fm_version_green:
+                ivFmVersionGreen.setBackgroundResource(R.drawable.fm_version_select_n);
+                if (mLastClickImg != null) {
+                    mLastClickImg.setBackgroundResource(0);
+                }
                 mBluzManagerUtils.sendColor(0, 255, 100);
+                mLastClickImg = ivFmVersionGreen;
                 break;
             case R.id.iv_fm_version_dark_yellow:
+                ivFmVersionDarkYellow.setBackgroundResource(R.drawable.fm_version_select_n);
+                if (mLastClickImg != null) {
+                    mLastClickImg.setBackgroundResource(0);
+                }
                 mBluzManagerUtils.sendColor(255, 235, 53);
+                mLastClickImg = ivFmVersionDarkYellow;
                 break;
             case R.id.iv_fm_version_emerald:
+                ivFmVersionEmerald.setBackgroundResource(R.drawable.fm_version_select_n);
+                if (mLastClickImg != null) {
+                    mLastClickImg.setBackgroundResource(0);
+                }
                 mBluzManagerUtils.sendColor(65, 255, 70);
+                mLastClickImg = ivFmVersionEmerald;
                 break;
             default:
                 break;
@@ -476,7 +519,6 @@ public class LEDMainActivity extends BaseActivity implements SeekBar.OnSeekBarCh
             colorPickerView.recycle();
         }
     }
-
 
 
 }

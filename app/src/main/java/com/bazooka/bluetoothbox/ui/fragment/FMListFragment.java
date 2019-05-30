@@ -96,7 +96,8 @@ public class FMListFragment extends BaseFragment {
         mFmChannels.addAll(fmChannels);
         adapter.notifyDataSetChanged();
     }
-    public  List<FmChannelCache> getFmChannels (){
+
+    public List<FmChannelCache> getFmChannels() {
         return mFmChannels;
     }
 
@@ -105,8 +106,25 @@ public class FMListFragment extends BaseFragment {
         adapter.setOnItemClickListener((adapter1, view, position) -> {
             if (onChannelClickListener != null) {
                 onChannelClickListener.onChannelClick(mFmChannels.get(position).getChannel());
+                adapter.select(position);
             }
         });
+    }
+
+    public void select(int channels) {
+        int position = -1;
+        try {
+            for (int i = 0, length = mFmChannels.size(); i < length; i++) {
+                if (channels == mFmChannels.get(i).getChannel()) {
+                    position = i;
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            Log.v(TAG, " select ", e);
+        }
+        adapter.select(position);
+
     }
 
     public void setOnChannelClickListener(OnChannelClickListener l) {

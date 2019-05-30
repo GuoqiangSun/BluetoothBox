@@ -1,15 +1,16 @@
 package com.bazooka.bluetoothbox.base.dialog;
 
 import android.app.Activity;
-import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 
 import com.bazooka.bluetoothbox.base.activity.IActivity;
 
@@ -35,6 +36,25 @@ public abstract class BaseDialogFragment extends DialogFragment implements IActi
         super.onCreate(savedInstanceState);
         mContext = getActivity();
         setStyle(isShowTitle() ? DialogFragment.STYLE_NORMAL : DialogFragment.STYLE_NO_TITLE, returnDialogStyle());
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        //设置背景半透明
+        DisplayMetrics dm = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+        Window window = getDialog().getWindow();
+        if (window != null) {
+            window.setLayout(dm.widthPixels, window.getAttributes().height);
+
+//            int selectColor = Color.parseColor("#0E000080");
+//            window.setBackgroundDrawable(new ColorDrawable(selectColor));
+
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+
     }
 
     @Nullable

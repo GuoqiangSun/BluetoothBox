@@ -24,9 +24,9 @@ import butterknife.Unbinder;
 
 /**
  * @author 尹晓童
- *         邮箱：yinxtno1@yeah.net
- *         时间：2017/8/31
- *         作用：Activity 基类
+ * 邮箱：yinxtno1@yeah.net
+ * 时间：2017/8/31
+ * 作用：Activity 基类
  */
 
 public abstract class BaseActivity extends AppCompatActivity implements IActivity {
@@ -129,8 +129,8 @@ public abstract class BaseActivity extends AppCompatActivity implements IActivit
             });
         }
         disconnectHintDialog.show();
-        disconnectHintDialog.setNegativeBackground(R.drawable.bg_light_blue);
-        disconnectHintDialog.setPositiveBackground(R.drawable.bg_dark_grey);
+        disconnectHintDialog.setNegativeBackground(R.drawable.bg_light_blue_n);
+        disconnectHintDialog.setPositiveBackground(R.drawable.bg_dark_grey_n);
     }
 
     @Override

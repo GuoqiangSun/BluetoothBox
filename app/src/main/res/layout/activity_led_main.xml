@@ -9,19 +9,19 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="35dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginTop="15dp"
         android:layout_marginRight="13dp"
-        android:layout_marginTop="15dp">
+        android:layout_marginBottom="20dp">
 
         <ImageView
             android:id="@+id/iv_back"
             android:layout_width="60dp"
             android:layout_height="match_parent"
             android:contentDescription="@null"
-            android:paddingBottom="5dp"
             android:paddingLeft="15dp"
-            android:paddingRight="10dp"
             android:paddingTop="5dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="5dp"
             android:src="@drawable/ic_back" />
 
         <ImageView
@@ -95,8 +95,7 @@
                 android:id="@+id/iv_select_color_background"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_frame_color"
-                  />
+                android:src="@drawable/ic_frame_color" />
 
             <TableLayout
                 android:id="@+id/tl_select_color"
@@ -108,48 +107,75 @@
 
                     <ImageView
                         android:id="@+id/iv_fm_version_yellow"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:src="@drawable/fm_version_yellow" />
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:scaleType="center"
+                        android:src="@drawable/fm_version_yellow_n" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
+
 
                     <ImageView
                         android:id="@+id/iv_fm_version_purple"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:src="@drawable/fm_version_purple" />
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:scaleType="center"
+                        android:src="@drawable/fm_version_purple_n" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
 
                     <ImageView
                         android:id="@+id/iv_fm_version_blue"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:src="@drawable/fm_version_blue" />
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:scaleType="center"
+                        android:src="@drawable/fm_version_blue_n" />
                 </TableRow>
 
                 <TableRow>
 
                     <ImageView
                         android:id="@+id/iv_fm_version_red"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:src="@drawable/fm_version_red" />
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:scaleType="center"
+                        android:src="@drawable/fm_version_red_n" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
 
                     <ImageView
                         android:id="@+id/iv_fm_version_orange"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:src="@drawable/fm_version_orange" />
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:scaleType="center"
+                        android:src="@drawable/fm_version_orange_n" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
 
                     <ImageView
                         android:id="@+id/iv_fm_version_mazarine"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:src="@drawable/fm_version_mazarine" />
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:scaleType="center"
+                        android:src="@drawable/fm_version_mazarine_n" />
 
                 </TableRow>
 
@@ -157,24 +183,37 @@
 
                     <ImageView
                         android:id="@+id/iv_fm_version_green"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:src="@drawable/fm_version_green" />
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:scaleType="center"
+                        android:src="@drawable/fm_version_green_n" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
 
                     <ImageView
                         android:id="@+id/iv_fm_version_dark_yellow"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:src="@drawable/fm_version_dark_yellow" />
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:scaleType="center"
+                        android:src="@drawable/fm_version_dark_yellow_n" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
 
                     <ImageView
                         android:id="@+id/iv_fm_version_emerald"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:src="@drawable/fm_version_emerald" />
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:scaleType="center"
+                        android:src="@drawable/fm_version_emerald_n" />
 
                 </TableRow>
 
@@ -210,8 +249,8 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:layout_marginLeft="29dp"
-        android:layout_marginRight="29dp"
         android:layout_marginTop="10dp"
+        android:layout_marginRight="29dp"
         android:orientation="vertical"
         android:paddingBottom="10dp">
 
@@ -245,24 +284,24 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@id/sb_brightness"
                 android:layout_below="@id/sb_brightness"
+                android:layout_alignLeft="@id/sb_brightness"
                 android:text="0.5x" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/sb_brightness"
                 android:layout_alignLeft="@id/sb_brightness"
                 android:layout_alignRight="@id/sb_brightness"
-                android:layout_below="@id/sb_brightness"
                 android:gravity="center"
                 android:text="1x" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignRight="@id/sb_brightness"
                 android:layout_below="@id/sb_brightness"
+                android:layout_alignRight="@id/sb_brightness"
                 android:text="2x" />
 
         </RelativeLayout>
@@ -296,24 +335,24 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@id/sb_speed"
                 android:layout_below="@id/sb_speed"
+                android:layout_alignLeft="@id/sb_speed"
                 android:text="0.5x" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/sb_speed"
                 android:layout_alignLeft="@id/sb_speed"
                 android:layout_alignRight="@id/sb_speed"
-                android:layout_below="@id/sb_speed"
                 android:gravity="center"
                 android:text="1x" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignRight="@id/sb_speed"
                 android:layout_below="@id/sb_speed"
+                android:layout_alignRight="@id/sb_speed"
                 android:text="2x" />
 
         </RelativeLayout>

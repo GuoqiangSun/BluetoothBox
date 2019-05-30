@@ -1,39 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_n_bg">
 
     <TextView
         android:id="@+id/tv_hint"
         style="@style/DialogTextStyle"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
         android:layout_marginTop="50dp"
-        android:text="@string/bluetooth_connect_fail_hint"
+        android:textColor="@color/black"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:text="@string/bluetooth_connect_fail_hint" />
 
     <Button
         android:id="@+id/btn_positive"
-        style="@style/WhiteTextStyle"
-        android:textAllCaps="false"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@id/tv_hint"
-        android:layout_marginTop="50dp"
         android:layout_marginLeft="35dp"
-        android:background="@drawable/bg_light_blue"
-        android:text="@string/setting"/>
+        android:textColor="@color/black"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/bg_light_blue_n"
+        android:text="@string/setting"
+        android:textAllCaps="false" />
 
     <Button
         android:id="@+id/btn_negative"
-        style="@style/WhiteTextStyle"
-        android:textAllCaps="false"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@id/tv_hint"
+        android:layout_alignParentRight="true"
         android:layout_marginTop="50dp"
         android:layout_marginRight="35dp"
+        android:textColor="@color/black"
         android:layout_marginBottom="30dp"
-        android:layout_alignParentRight="true"
-        android:background="@drawable/bg_dark_grey"
-        android:text="@string/cancel"/>
+        android:background="@drawable/bg_dark_grey_n"
+        android:text="@string/cancel"
+        android:textAllCaps="false" />
 
 </RelativeLayout>

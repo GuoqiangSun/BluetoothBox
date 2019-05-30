@@ -1,6 +1,7 @@
 package com.bazooka.bluetoothbox.ui.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.view.View;
 
@@ -30,11 +31,37 @@ public class FmChannelAdapter extends BaseQuickAdapter<FmChannelCache, BaseViewH
 
     }
 
+    private int position = -1;
+
+    public void select(int position) {
+        int lastPosition = this.position;
+        this.position = position;
+        notifyItemChanged(position);
+        if (lastPosition != -1) {
+            notifyItemChanged(lastPosition);
+        }
+    }
+
+
+    private int selectColor = Color.parseColor("#FFB6C1");
+    private int normalColor = Color.parseColor("#FFFFFF");
+
     @Override
     protected void convert(BaseViewHolder helper, FmChannelCache item) {
+
+        if (position != -1) {
+            if (helper.getLayoutPosition() == position) {
+                helper.setTextColor(R.id.fm_name, selectColor);
+                helper.setTextColor(R.id.fm_channel, selectColor);
+            } else {
+                helper.setTextColor(R.id.fm_name, normalColor);
+                helper.setTextColor(R.id.fm_channel, normalColor);
+            }
+        }
+
         int layoutPosition = helper.getLayoutPosition();
-        helper.setText(R.id.fm_name,"ST "+String.valueOf(layoutPosition));
-               helper.setText(R.id.fm_channel, mContext.getString(R.string.fm_channel, item.getChannel() / 1000f));
+        helper.setText(R.id.fm_name, "ST " + String.valueOf(layoutPosition + 1));
+        helper.setText(R.id.fm_channel, mContext.getString(R.string.fm_channel, item.getChannel() / 1000f));
 
         helper.getView(R.id.fm_delete).setOnClickListener(new View.OnClickListener() {
             @Override

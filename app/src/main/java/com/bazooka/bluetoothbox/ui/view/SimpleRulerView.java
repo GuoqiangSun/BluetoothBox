@@ -297,8 +297,10 @@ public class SimpleRulerView extends View implements
 		int start = mSelectedIndex - mViewScopeSize;
 		int end = mSelectedIndex + mViewScopeSize;
 
+
 		start = Math.max(start, -mViewScopeSize * 2);
 		end = Math.min(end, mRulerCount + mViewScopeSize * 2);
+
 
 		if (mSelectedIndex == mMaxValue) {
 			end += mViewScopeSize;
@@ -353,7 +355,7 @@ public class SimpleRulerView extends View implements
 					} else {
 						text = format(i * mIntervalValue + mMinValue);
 					}
-					canvas.drawText(text, 0, text.length(), x, markHeight + mTextSize, mTextPaint);
+					canvas.drawText(text,0, text.length(), x, markHeight + mTextSize, mTextPaint);
 				}
 			}
 			x += mIntervalDis;

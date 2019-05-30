@@ -52,10 +52,20 @@ public class FmModeActivity extends MusicCommonActivity implements FmModeCallbac
     private FmControlFragment fmControlFragment;
     private FMListFragment fmListFragment;
 
+
     /**
      * 当前播放频道
      */
-    private int currPlayChannel = 87500;
+    private int currPlayChannell = 87500;
+
+    private int getCurPlayChannel() {
+        return currPlayChannell;
+    }
+
+    private void setCurPlayChannel(int curPlayChannel) {
+        this.currPlayChannell = curPlayChannel;
+    }
+
     private PromptDialogV2 hintDialog;
     private int channels;
 
@@ -86,10 +96,13 @@ public class FmModeActivity extends MusicCommonActivity implements FmModeCallbac
         channels = fmControlFragment.getCurrentChannel();
         mBluzManagerUtils = BluzManagerUtils.getInstance();
         if (mBluzManagerUtils.getCurrentMode() == BluzManagerData.FuncMode.RADIO) {
+            Log.i(TAG, "mBluzManagerUtils is RADIO model");
             initRadioManager();
         } else {
             mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.show();
             mBluzManagerUtils.setMode(BluzManagerData.FuncMode.RADIO);
+            Log.i(TAG, "mBluzManagerUtils setMode RADIO");
         }
         Log.i(TAG, "fmChannels = " + fmChannels.size());
     }
@@ -157,10 +170,12 @@ public class FmModeActivity extends MusicCommonActivity implements FmModeCallbac
                 if (fmChannels.size() > 0) {
                     int index = findNextOrPreChannel(false);
                     int channel = fmChannels.get(index).getChannel();
-                    FmModeActivity.this.currPlayChannel = channel;
+                    setCurPlayChannel(channel);
+                    channels = channel;
                     Log.v(TAG, " onPreClick " + channel);
                     fmControlFragment.setCurrentChannel(channel);
                     mRadioManager.select(channel);
+                    fmListFragment.select(channel);
                 }
             }
 
@@ -174,23 +189,25 @@ public class FmModeActivity extends MusicCommonActivity implements FmModeCallbac
                 if (fmChannels.size() > 0) {
                     int index = findNextOrPreChannel(true);
                     int channel = fmChannels.get(index).getChannel();
-                    FmModeActivity.this.currPlayChannel = channel;
+                    setCurPlayChannel(channel);
+                    channels = channel;
                     Log.v(TAG, " onNextClick " + channel);
                     fmControlFragment.setCurrentChannel(channel);
                     mRadioManager.select(channel);
+                    fmListFragment.select(channel);
                 }
             }
 
             //向前微调
             @Override
             public void onMicroPreClick() {
-                Log.v(TAG, " onMicroPreClick ");
+                Log.v(TAG, " onMicroPreClick " + getCurPlayChannel());
                 if (BluzDeviceUtils.getInstance().getConnectionDevice() == null) {
                     hintDialog.show();
                     return;
                 }
 
-                float selectedValue = (FmModeActivity.this.currPlayChannel - 100) / 1000f;
+                float selectedValue = (getCurPlayChannel() - 100) / 1000f;
 
                 if (selectedValue < fmControlFragment.getMinValue()
                         || selectedValue > fmControlFragment.getMaxValue()) {
@@ -199,29 +216,35 @@ public class FmModeActivity extends MusicCommonActivity implements FmModeCallbac
                             + fmControlFragment.getMinValue() + "," + fmControlFragment.getMaxValue()
                             + "],but the selectedValue is " + selectedValue);
 
-                    FmModeActivity.this.currPlayChannel = (int) (fmControlFragment.getMinValue() * 1000);
-                    Log.d(TAG, " rest currPlayChannel " + FmModeActivity.this.currPlayChannel);
-                    fmControlFragment.setCurrentChannel(FmModeActivity.this.currPlayChannel);
-                    mRadioManager.select(FmModeActivity.this.currPlayChannel);
-
+                    int currPlayChannel = (int) (fmControlFragment.getMinValue() * 1000);
+                    channels = currPlayChannel;
+                    Log.d(TAG, " rest currPlayChannel " + currPlayChannel);
+                    setCurPlayChannel(currPlayChannel);
+                    fmControlFragment.setCurrentChannel(currPlayChannel);
+                    mRadioManager.select(currPlayChannel);
+                    fmListFragment.select(currPlayChannel);
                     return;
                 }
-
-                FmModeActivity.this.currPlayChannel -= 100;
-                fmControlFragment.setCurrentChannel(FmModeActivity.this.currPlayChannel);
-                mRadioManager.select(FmModeActivity.this.currPlayChannel);
+                int curPlayChannel = getCurPlayChannel();
+                curPlayChannel -= 100;
+                setCurPlayChannel(curPlayChannel);
+                Log.v(TAG, " onMicroPreClick -= 100:" + curPlayChannel);
+                channels = curPlayChannel;
+                fmControlFragment.setCurrentChannel(curPlayChannel);
+                mRadioManager.select(curPlayChannel);
+                fmListFragment.select(curPlayChannel);
             }
 
             //向后微调
             @Override
             public void onMicroNextClick() {
-                Log.v(TAG, " onMicroNextClick ");
+                Log.v(TAG, " onMicroNextClick :" + getCurPlayChannel());
                 if (BluzDeviceUtils.getInstance().getConnectionDevice() == null) {
                     hintDialog.show();
                     return;
                 }
 
-                float selectedValue = (FmModeActivity.this.currPlayChannel + 100) / 1000f;
+                float selectedValue = (getCurPlayChannel() + 100) / 1000f;
 
                 if (selectedValue < fmControlFragment.getMinValue()
                         || selectedValue > fmControlFragment.getMaxValue()) {
@@ -230,18 +253,24 @@ public class FmModeActivity extends MusicCommonActivity implements FmModeCallbac
                             + fmControlFragment.getMinValue() + "," + fmControlFragment.getMaxValue()
                             + "],but the selectedValue is " + selectedValue);
 
-                    FmModeActivity.this.currPlayChannel = (int) (fmControlFragment.getMaxValue() * 1000);
-                    Log.d(TAG, " rest currPlayChannel " + FmModeActivity.this.currPlayChannel);
+                    int currPlayChannel = (int) (fmControlFragment.getMaxValue() * 1000);
+                    Log.d(TAG, " rest currPlayChannel " + currPlayChannel);
+                    channels = currPlayChannel;
+                    setCurPlayChannel(currPlayChannel);
                     fmControlFragment.setCurrentChannel(currPlayChannel);
                     mRadioManager.select(currPlayChannel);
-
+                    fmListFragment.select(currPlayChannel);
                     return;
                 }
 
-
-                currPlayChannel += 100;
-                fmControlFragment.setCurrentChannel(currPlayChannel);
-                mRadioManager.select(currPlayChannel);
+                int curPlayChannel = getCurPlayChannel();
+                curPlayChannel += 100;
+                setCurPlayChannel(curPlayChannel);
+                Log.v(TAG, " onMicroNextClick += 100:" + curPlayChannel);
+                channels = curPlayChannel;
+                fmControlFragment.setCurrentChannel(curPlayChannel);
+                mRadioManager.select(curPlayChannel);
+                fmListFragment.select(curPlayChannel);
             }
 
             //添加FM频道
@@ -268,8 +297,8 @@ public class FmModeActivity extends MusicCommonActivity implements FmModeCallbac
                 //排序
                 Collections.sort(fmChannels, new sortByFmChannles());
                 fmListFragment.setFmChannels(fmChannels, true);
-
-                Log.i(TAG, "fmChannels = " + fmChannels.size());
+                fmListFragment.select(getCurPlayChannel());
+                Log.i(TAG, "onAddFmClick fmChannels = " + fmChannels.size());
 
             }
         });
@@ -279,9 +308,12 @@ public class FmModeActivity extends MusicCommonActivity implements FmModeCallbac
             public void onChannelChangeFinished(float value) {
                 Log.i(TAG, "onChannelChangeFinished = " + value);
                 channels = (int) (value * 1000);
-                FmModeActivity.this.currPlayChannel = channels;
+                setCurPlayChannel(channels);
+                if (fmListFragment != null) {
+                    fmListFragment.select(channels);
+                }
                 if (fmControlFragment != null) {
-                    fmControlFragment.setCurrentChannel(currPlayChannel);
+                    fmControlFragment.setCurrentChannel(channels);
                 }
                 if (mRadioManager != null) {
                     mRadioManager.select(channels);
@@ -314,6 +346,14 @@ public class FmModeActivity extends MusicCommonActivity implements FmModeCallbac
     @Override
     protected void onResume() {
         super.onResume();
+
+        int model = mBluzManagerUtils.getCurrentMode();
+        Log.v(TAG, " onResume: getCurPlayChannel:" + model);
+
+        if (model != BluzManagerData.FuncMode.RADIO) {
+            mBluzManagerUtils.setMode(BluzManagerData.FuncMode.RADIO);
+        }
+
     }
 
     private BluzManagerData.OnRadioUIChangedListener mRadioUIChangedListener = new BluzManagerData.OnRadioUIChangedListener() {
@@ -334,7 +374,14 @@ public class FmModeActivity extends MusicCommonActivity implements FmModeCallbac
 
         @Override
         public void onChannelChanged(int channel) {
-            currPlayChannel = channel;
+            Log.v(TAG, " onChannelChanged: currPlayChannel:" + channel);
+            if (fmControlFragment != null
+                    && channel > (fmControlFragment.getMinValue() * 1000)
+                    && channel < (fmControlFragment.getMaxValue() * 1000)) {
+                setCurPlayChannel(channel);
+            } else {
+                Log.e(TAG, " onChannelChanged out of range");
+            }
 //            fmControlFragment.setCurrentChannel(currPlayChannel);
         }
 
@@ -358,6 +405,7 @@ public class FmModeActivity extends MusicCommonActivity implements FmModeCallbac
             fmChannels.clear();
             fmChannels.addAll(channels);
             fmListFragment.setFmChannels(channels, true);
+            fmListFragment.select(getCurPlayChannel());
             isScan = false;
             if (mProgressDialog.isShowing()) {
                 mProgressDialog.dismiss();
@@ -378,14 +426,14 @@ public class FmModeActivity extends MusicCommonActivity implements FmModeCallbac
     private int findNextOrPreChannel(boolean next) {
         for (int i = 0, length = fmChannels.size(); i < length; i++) {
             FmChannelCache channel = fmChannels.get(i);
-            if (channel.getChannel() > currPlayChannel) {
+            if (channel.getChannel() > getCurPlayChannel()) {
                 if (next) {
                     return i;
                 } else {
                     int temp = i - 1;
                     return temp < 0 ? length - 1 : temp;
                 }
-            } else if (channel.getChannel() == currPlayChannel) {
+            } else if (channel.getChannel() == getCurPlayChannel()) {
                 if (next) {
                     return (i + 1) % length;
                 } else {
@@ -433,6 +481,7 @@ public class FmModeActivity extends MusicCommonActivity implements FmModeCallbac
     @SuppressWarnings("unused")
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onModeChanged(ModeChangedEvent event) {
+        Log.v(TAG, " onModeChanged: :" + event.getMode());
         if (event.getMode() == BluzManagerData.FuncMode.RADIO) {
             initRadioManager();
         }
@@ -445,11 +494,11 @@ public class FmModeActivity extends MusicCommonActivity implements FmModeCallbac
             }
             mRadioManager.setOnRadioUIChangedListener(mRadioUIChangedListener);
             mRadioManager.setOnScanCompletionListener(mScanCompletionListener);
-
-            currPlayChannel = mRadioManager.getCurrentChannel();
-            Logger.d(currPlayChannel);
+            int currPlayChannel = mRadioManager.getCurrentChannel();
+            Log.v(TAG, " initRadioManager finish: currPlayChannel :" + currPlayChannel);
             EventBus.getDefault().postSticky(new CurrentChannel(currPlayChannel));
         });
+        Log.v(TAG, " initRadioManager finish: initRadioManager=null? :" + (mRadioManager == null));
     }
 
     /**

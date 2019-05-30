@@ -1,5 +1,6 @@
 package com.bazooka.bluetoothbox.ui.adapter;
 
+import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
@@ -23,8 +24,35 @@ public class UsbMusicAdapter extends BaseQuickAdapter<BluzManagerData.PListEntry
         super(R.layout.item_music, data);
     }
 
+
+    private int position = -1;
+
+    public void select(int position) {
+        int lastPosition = this.position;
+        this.position = position;
+        notifyItemChanged(position);
+        if (lastPosition != -1) {
+            notifyItemChanged(lastPosition);
+        }
+    }
+
+
+    private int selectColor = Color.parseColor("#FFB6C1");
+    private int normalColor = Color.parseColor("#FFFFFF");
+
+
     @Override
     protected void convert(BaseViewHolder holder, BluzManagerData.PListEntry item) {
+
+        if (position != -1) {
+            if (holder.getLayoutPosition() == position) {
+                holder.setTextColor(R.id.tv_name, selectColor);
+                holder.setTextColor(R.id.tv_info, selectColor);
+            } else {
+                holder.setTextColor(R.id.tv_name, normalColor);
+                holder.setTextColor(R.id.tv_info, normalColor);
+            }
+        }
 
         holder.setText(R.id.tv_name, TextUtils.isEmpty(item.artist) ? "unknown" : item.artist);
         holder.setText(R.id.tv_info, item.name);

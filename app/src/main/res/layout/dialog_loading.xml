@@ -1,9 +1,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="100dp"
     android:layout_height="100dp"
+    android:layout_centerInParent="true"
     android:layout_gravity="center_horizontal"
     android:background="@drawable/bg_shape_dialog"
-    android:layout_centerInParent="true"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -15,8 +15,7 @@
             android:id="@+id/pb_load"
             android:layout_width="65dp"
             android:layout_height="65dp"
-            android:layout_centerInParent="true"
-            />
+            android:layout_centerInParent="true" />
 
     </RelativeLayout>
 
@@ -27,6 +26,7 @@
         android:layout_gravity="center_horizontal"
         android:text="Connecting..."
         android:textColor="#9a9b98"
-        android:textSize="14sp"/>
+        android:textSize="14sp"
+        android:textStyle="bold" />
 
 </LinearLayout>

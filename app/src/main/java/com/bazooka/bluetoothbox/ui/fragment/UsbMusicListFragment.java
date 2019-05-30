@@ -61,8 +61,9 @@ public class UsbMusicListFragment extends BaseFragment {
     @Override
     public void addViewListener() {
         mAdapter.setOnItemClickListener((adapter, view, position) -> {
-            if(mOnMusicItemClickListener != null) {
+            if (mOnMusicItemClickListener != null) {
                 mOnMusicItemClickListener.onItemClick(musicList.get(position).index);
+                mAdapter.select(position);
             }
         });
     }
@@ -70,16 +71,23 @@ public class UsbMusicListFragment extends BaseFragment {
 
     /**
      * 音乐列表搜索完成
-     * 由 {@link com.bazooka.bluetoothbox.ui.activity.UsbModeActivity.MusicHandler 89行} 发送
+     * 由 {@link com.bazooka.bluetoothbox.ui.activity.UsbModeActivity MusicHandler 89行} 发送
+     *
      * @param event 事件
      */
     @SuppressWarnings("unused")
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void addMusicList(UsbMusicScanSuccessEvent event) {
-        if(event.getMusicLisc() != null) {
+        if (event.getMusicLisc() != null) {
             musicList.clear();
             musicList.addAll(event.getMusicLisc());
             mAdapter.notifyDataSetChanged();
+        }
+    }
+
+    public void play(int position) {
+        if (mAdapter != null) {
+            mAdapter.select(position);
         }
     }
 
@@ -89,11 +97,11 @@ public class UsbMusicListFragment extends BaseFragment {
         EventBus.getDefault().unregister(this);
     }
 
-    public void setOnMusicItemClickListener(OnMusicItemClickListener l){
+    public void setOnMusicItemClickListener(OnMusicItemClickListener l) {
         mOnMusicItemClickListener = l;
     }
 
-    public interface OnMusicItemClickListener{
+    public interface OnMusicItemClickListener {
         void onItemClick(int index);
     }
 }

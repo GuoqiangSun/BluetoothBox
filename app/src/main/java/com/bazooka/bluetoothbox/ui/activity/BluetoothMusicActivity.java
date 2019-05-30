@@ -8,10 +8,10 @@ import com.bazooka.bluetoothbox.R;
 import com.bazooka.bluetoothbox.base.activity.MusicCommonActivity;
 import com.bazooka.bluetoothbox.bean.Music;
 import com.bazooka.bluetoothbox.bean.event.ModeChangedEvent;
+import com.bazooka.bluetoothbox.bean.event.PlayEvent;
 import com.bazooka.bluetoothbox.cache.MusicCache;
 import com.bazooka.bluetoothbox.listener.OnPlayerEventListener;
 import com.bazooka.bluetoothbox.service.PlayService;
-import com.bazooka.bluetoothbox.ui.dialog.LoadingDialog;
 import com.bazooka.bluetoothbox.ui.fragment.BluetoothPlayControlFragment;
 import com.bazooka.bluetoothbox.ui.fragment.MusicListFragment;
 import com.bazooka.bluetoothbox.utils.SpManager;
@@ -26,9 +26,9 @@ import java.util.List;
 
 /**
  * @author 尹晓童
- *         邮箱：yinxtno1@yeah.net
- *         时间：2017/9/14
- *         作用：蓝牙音乐播放界面
+ * 邮箱：yinxtno1@yeah.net
+ * 时间：2017/9/14
+ * 作用：蓝牙音乐播放界面
  */
 
 public class BluetoothMusicActivity extends MusicCommonActivity {
@@ -56,7 +56,6 @@ public class BluetoothMusicActivity extends MusicCommonActivity {
         fragments.add(new MusicListFragment());
 
 
-
     }
 
     @Override
@@ -82,7 +81,7 @@ public class BluetoothMusicActivity extends MusicCommonActivity {
             loadingDialog.setCancelable(false);
             loadingDialog.show();
         } else {
-            if(MusicCache.getMusicList().size() > 0) {
+            if (MusicCache.getMusicList().size() > 0 && mPlayService != null) {
                 int playingPosition = mPlayService.getPlayingPosition() == -1 ? 0 : mPlayService.getPlayingPosition();
                 //TO: BluetoothPlayControlFragment.updateMusicInfo 更新音乐播放信息
                 EventBus.getDefault().postSticky(MusicCache.getMusicList().get(playingPosition));
@@ -90,7 +89,7 @@ public class BluetoothMusicActivity extends MusicCommonActivity {
         }
 
         //TO: BluetoothPlayControlFragment.playStateChanged 更新音乐播放状态
-        if(mPlayService.isPlaying()) {
+        if (mPlayService != null && mPlayService.isPlaying()) {
             EventBus.getDefault().postSticky(new MusicStateChangeEvent(true));
         } else {
             EventBus.getDefault().postSticky(new MusicStateChangeEvent(false));
@@ -108,11 +107,15 @@ public class BluetoothMusicActivity extends MusicCommonActivity {
             @Override
             public void onChange(Music music) {
                 EventBus.getDefault().postSticky(music);
+                PlayEvent playEvent = new PlayEvent(MusicCache.getPlayService().getPlayingPosition());
+                EventBus.getDefault().post(playEvent);
             }
 
             @Override
             public void onPlayerStart() {
                 EventBus.getDefault().postSticky(new MusicStateChangeEvent(true));
+                PlayEvent playEvent = new PlayEvent(MusicCache.getPlayService().getPlayingPosition());
+                EventBus.getDefault().post(playEvent);
             }
 
             @Override

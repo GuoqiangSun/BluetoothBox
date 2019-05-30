@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/transparent"
+    android:background="@drawable/dialog_n_bg"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:padding="20dp">
@@ -12,14 +12,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Select Your Speaker"
-        android:textSize="20sp" />
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_bluetooth_devices"
         android:layout_width="match_parent"
         android:layout_height="220dp"
         android:layout_marginTop="10dp"
-        android:overScrollMode="never"/>
+        android:overScrollMode="never" />
 
 
 </LinearLayout>

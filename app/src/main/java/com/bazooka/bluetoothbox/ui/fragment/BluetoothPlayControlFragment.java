@@ -1,7 +1,6 @@
 package com.bazooka.bluetoothbox.ui.fragment;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,19 +8,16 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.actions.ibluz.manager.BluzManagerData;
 import com.bazooka.bluetoothbox.R;
 import com.bazooka.bluetoothbox.base.fragment.BaseFragment;
 import com.bazooka.bluetoothbox.bean.Music;
+import com.bazooka.bluetoothbox.bean.event.PlayEvent;
 import com.bazooka.bluetoothbox.bean.event.VolumeChangedEvent;
 import com.bazooka.bluetoothbox.cache.MusicCache;
 import com.bazooka.bluetoothbox.ui.activity.BluetoothMusicActivity;
 import com.bazooka.bluetoothbox.utils.DateUtils;
 import com.bazooka.bluetoothbox.utils.SpManager;
 import com.bazooka.bluetoothbox.utils.bluetooth.BluzManagerUtils;
-import com.blankj.utilcode.util.ConvertUtils;
-import com.blankj.utilcode.util.TimeUtils;
-import com.orhanobut.logger.Logger;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -107,7 +103,7 @@ public class BluetoothPlayControlFragment extends BaseFragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_play:
-                if(MusicCache.getPlayService().getPlayingMusic() == null) {
+                if (MusicCache.getPlayService().getPlayingMusic() == null) {
                     MusicCache.getPlayService().play(0);
                 } else {
                     MusicCache.getPlayService().playPause();
@@ -125,13 +121,13 @@ public class BluetoothPlayControlFragment extends BaseFragment {
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-    public void playStateChanged(BluetoothMusicActivity.MusicStateChangeEvent event){
+    public void playStateChanged(BluetoothMusicActivity.MusicStateChangeEvent event) {
         isPlaying = event.isPlaying();
         ivPlay.setImageResource(isPlaying ? R.drawable.ic_pause : R.drawable.ic_play);
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-    public void updateMusicInfo(Music music){
+    public void updateMusicInfo(Music music) {
         currMusic = music;
         tvName.setText(music.getArtist());
         tvInfo.setText(music.getFileName());

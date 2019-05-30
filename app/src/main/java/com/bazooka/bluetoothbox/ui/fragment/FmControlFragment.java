@@ -150,11 +150,11 @@ public class FmControlFragment extends BaseFragment {
     }
 
     public final float getMinValue() {
-        return rulerFm.getMinValue();
+        return rulerFm != null ? rulerFm.getMinValue() : 87.5f;
     }
 
     public final float getMaxValue() {
-        return rulerFm.getMaxValue();
+        return rulerFm != null ? rulerFm.getMaxValue() : 108.0f;
     }
 
     public void setCurrentChannel(int channel) {
@@ -191,6 +191,7 @@ public class FmControlFragment extends BaseFragment {
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void currentChannel(FmModeActivity.CurrentChannel channel) {
         int currentChannel = channel.getChannel();
+        Log.v("FmModeActivity", " currentChannel set:" + currentChannel);
         setCurrentChannel(currentChannel < 87500 ? 87500 : currentChannel);
     }
 

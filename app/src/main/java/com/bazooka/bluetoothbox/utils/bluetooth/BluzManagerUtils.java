@@ -20,13 +20,11 @@ import com.orhanobut.logger.Logger;
 
 import org.greenrobot.eventbus.EventBus;
 
-import static android.R.attr.data;
-
 /**
  * @author 尹晓童
- *         邮箱：yinxtno1@yeah.net
- *         时间：2017/11/18
- *         作用：BluzManager 的封装工具类
+ * 邮箱：yinxtno1@yeah.net
+ * 时间：2017/11/18
+ * 作用：BluzManager 的封装工具类
  */
 
 public class BluzManagerUtils {
@@ -169,7 +167,7 @@ public class BluzManagerUtils {
         if (mBluzManager == null) {
             return;
         }
-        if (mode != BluzManagerData.FuncMode.A2DP && MusicCache.getPlayService().isPlaying()) {
+        if (mode != BluzManagerData.FuncMode.A2DP && MusicCache.getPlayService() != null && MusicCache.getPlayService().isPlaying()) {
             MusicCache.getPlayService().playPause();
         }
         mBluzManager.setMode(mode);
@@ -214,6 +212,7 @@ public class BluzManagerUtils {
 
     /**
      * 获取当前音量，从本地缓存获取
+     *
      * @return 当前音量
      */
     public int getCurrVolume() {
@@ -222,6 +221,7 @@ public class BluzManagerUtils {
 
     /**
      * 获取最大音量
+     *
      * @return 最大音量
      */
     public int getMaxVolume() {
@@ -250,7 +250,7 @@ public class BluzManagerUtils {
             return;
         }
         mBluzManager.setOnCustomCommandListener((what, param1, param2, bytes) -> {
-            if(BuildConfig.DEBUG) {
+            if (BuildConfig.DEBUG) {
                 if (bytes == null) {
                     Logger.d("param1：" + param1 + "   param2: " + param2 + "\n数据：null");
                 } else {
@@ -269,10 +269,12 @@ public class BluzManagerUtils {
         }
         mBluzManager.setOnCustomCommandListener(listener);
     }
+
     public IBluzManager getIBluzManager() {
 
         return mBluzManager;
     }
+
     /**
      * 打开、关闭 LED 灯
      */
@@ -328,7 +330,7 @@ public class BluzManagerUtils {
      */
     public void sendSwitch(int index, int state) {
         //高四位为继电器下标，低四位为开关状态
-        if(BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG) {
             Logger.d("继电器==> " + Integer.toHexString(index) + Integer.toHexString(state));
             Logger.d("继电器 2进制==> " + Integer.toBinaryString(index) + Integer.toBinaryString(state));
         }
@@ -390,7 +392,7 @@ public class BluzManagerUtils {
     /**
      * 退出升级模式
      */
-    public void quitUpgreadeMode(){
+    public void quitUpgreadeMode() {
         sendCustomCommand(KEY_QUE_QUERY_MCU_VERSION, 0xB2, 0, null);
     }
 
@@ -398,7 +400,7 @@ public class BluzManagerUtils {
         if (mBluzManager == null) {
             return;
         }
-        if(BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG) {
             if (data == null) {
                 Logger.d("指令：0x" + Integer.toHexString(param1) + "    数据长度：0\n数据：null");
             } else {

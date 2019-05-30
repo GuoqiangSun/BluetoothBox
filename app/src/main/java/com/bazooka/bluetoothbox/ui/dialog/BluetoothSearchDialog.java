@@ -6,11 +6,11 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,9 +35,9 @@ import butterknife.BindView;
 
 /**
  * @author 尹晓童
- *         邮箱：yinxtno1@yeah.net
- *         时间：2017/11/17
- *         作用：蓝牙搜索弹框
+ * 邮箱：yinxtno1@yeah.net
+ * 时间：2017/11/17
+ * 作用：蓝牙搜索弹框
  */
 
 public class BluetoothSearchDialog extends BaseDialogFragment {
@@ -87,7 +87,7 @@ public class BluetoothSearchDialog extends BaseDialogFragment {
     public void initView() {
         rvBluetoothDevices.setAdapter(mAdapter);
         rvBluetoothDevices.setLayoutManager(new LinearLayoutManager(mContext));
-        ((SimpleItemAnimator)rvBluetoothDevices.getItemAnimator()).setSupportsChangeAnimations(false);
+        ((SimpleItemAnimator) rvBluetoothDevices.getItemAnimator()).setSupportsChangeAnimations(false);
         pbLoading = new ProgressBar(getContext());
 
     }
@@ -111,7 +111,7 @@ public class BluetoothSearchDialog extends BaseDialogFragment {
                         if (!retry(device)) {
                             setCancelable(true);
                             ToastUtil.showConnectFailToast();
-                            if(connectingDialog.isShowing()) {
+                            if (connectingDialog.isShowing()) {
                                 connectingDialog.dismiss();
                             }
                         }
@@ -121,7 +121,7 @@ public class BluetoothSearchDialog extends BaseDialogFragment {
                         if (!retry(device)) {
                             setCancelable(true);
                             ToastUtil.showConnectFailToast();
-                            if(connectingDialog.isShowing()) {
+                            if (connectingDialog.isShowing()) {
                                 connectingDialog.dismiss();
                             }
                         }
@@ -144,7 +144,7 @@ public class BluetoothSearchDialog extends BaseDialogFragment {
             @Override
             public void onDiscoveryFinished() {
                 setCancelable(true);
-                if(mHandler != null) {
+                if (mHandler != null) {
                     mHandler.postDelayed(() -> {
                         pbLoading.setVisibility(View.GONE);
                     }, 500);
@@ -154,11 +154,20 @@ public class BluetoothSearchDialog extends BaseDialogFragment {
             @Override
             public void onFound(BluetoothDevice device) {
 //                Logger.d(device.getName() + ":" + device.getAddress());
-                if (findDevice(device) == null) {
-                    mDeviceList.add(new BluetoothDeviceBean(device,
-                            BluzDeviceFactory.ConnectionState.SPP_DISCONNECTED));
-                    mAdapter.notifyDataSetChanged();
+                if (device != null) {
+                    String name = device.getName();
+                    if (name != null && (name.contains("G2") || name.contains("g2"))) {
+                        if (findDevice(device) == null) {
+                            mDeviceList.add(new BluetoothDeviceBean(device,
+                                    BluzDeviceFactory.ConnectionState.SPP_DISCONNECTED));
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    } else {
+//                        Logger.d("filter " + device.getName() + ":" + device.getAddress());
+                        Log.v("g2", "filter " + device.getName() + ":" + device.getAddress());
+                    }
                 }
+
                 mDiscoveryStarted = true;
             }
         });
@@ -206,7 +215,7 @@ public class BluetoothSearchDialog extends BaseDialogFragment {
         }
     }
 
-    private void startDiscovery(){
+    private void startDiscovery() {
         mConnectRetryTimes = 0;
         mDiscoveryStarted = false;
         initBluetoothBean();
@@ -242,7 +251,7 @@ public class BluetoothSearchDialog extends BaseDialogFragment {
 
     @Override
     public void dismiss() {
-        if(connectingDialog.isShowing()) {
+        if (connectingDialog.isShowing()) {
             connectingDialog.dismiss();
         }
         super.dismiss();

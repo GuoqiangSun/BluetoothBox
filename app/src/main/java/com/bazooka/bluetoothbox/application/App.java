@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.support.multidex.MultiDexApplication;
 
 import com.bazooka.bluetoothbox.BuildConfig;
 import com.bazooka.bluetoothbox.cache.db.DbHelper;
@@ -14,6 +15,7 @@ import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.FormatStrategy;
 import com.orhanobut.logger.Logger;
 import com.orhanobut.logger.PrettyFormatStrategy;
+import com.tencent.bugly.crashreport.CrashReport;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
@@ -24,7 +26,7 @@ import org.greenrobot.greendao.query.QueryBuilder;
  * 时间：2017/8/31
  * 作用：
  */
-public class App extends Application {
+public class App extends MultiDexApplication {
 
     private static App instance;
     private AudioManager mAudioManager;
@@ -66,6 +68,10 @@ public class App extends Application {
         //GreenDao 相关
         QueryBuilder.LOG_SQL = BuildConfig.DEBUG;
         QueryBuilder.LOG_VALUES = BuildConfig.DEBUG;
+
+        if (!BuildConfig.DEBUG) {
+            CrashReport.initCrashReport(this, "3a44314746", false);
+        }
     }
 
     public static App getContext() {

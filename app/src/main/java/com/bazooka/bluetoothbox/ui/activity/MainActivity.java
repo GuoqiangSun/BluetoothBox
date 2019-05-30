@@ -1,17 +1,16 @@
 package com.bazooka.bluetoothbox.ui.activity;
 
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.os.Process;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -29,7 +28,6 @@ import com.bazooka.bluetoothbox.cache.db.SendSuccessFlashHelper;
 import com.bazooka.bluetoothbox.cache.db.entity.LedFlash;
 import com.bazooka.bluetoothbox.cache.db.entity.SendSuccessFlash;
 import com.bazooka.bluetoothbox.listener.NoDoubleClickListener;
-import com.bazooka.bluetoothbox.ui.adapter.FmChannelAdapter;
 import com.bazooka.bluetoothbox.ui.dialog.BluetoothSearchDialog;
 import com.bazooka.bluetoothbox.ui.dialog.PromptDialog;
 import com.bazooka.bluetoothbox.ui.dialog.PromptDialogV2;
@@ -304,7 +302,7 @@ public class MainActivity extends BaseActivity {
 
         bluzDeviceUtils.setOnConnectionListener();
 
-        if (connectedDevice==null){
+        if (connectedDevice == null) {
             SpManager.getInstance().saveDeviceName("BAZ-G2"); //默认
         }
 //
@@ -368,6 +366,8 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    private String TAG = "bluz";
+
     /**
      * 蓝牙连接状态改变
      *
@@ -378,8 +378,16 @@ public class MainActivity extends BaseActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onConnectionStateChanged(ConnectedStateChangedEvent event) {
         BluetoothDevice device = event.getBluetoothDevice();
+        if (device == null) {
+            Log.e(TAG, " onConnectionStateChanged device == null");
+            return;
+        }
         connected = event.isConnected();
+        Log.e(TAG, " onConnectionStateChanged:" + device.getName());
         if (event.isConnected()) {
+            if (pdlRoot != null) {
+                pdlRoot.setCanTouch(true);
+            }
             mScaleAnimator.end();
             connectedDevice = device;
             SpManager.getInstance().saveDeviceAddress(device.getAddress());
@@ -389,7 +397,7 @@ public class MainActivity extends BaseActivity {
             ivBluetoothState.setSelected(true);
             tvBluetoothInfo.setText(getString(R.string.bluetooth_info, device.getName(), device.getAddress()));
 
-            if (device.getName().equals("BAZ-G2-FM")) {
+            if (device.getName() != null && device.getName().startsWith("BAZ-G2-FM")) {
                 btnAux.setVisibility(View.GONE);
                 btnSwitch.setVisibility(View.GONE);
                 btnFm.setVisibility(View.VISIBLE);
@@ -402,6 +410,12 @@ public class MainActivity extends BaseActivity {
 
 
         } else {
+            if (pdlRoot != null) {
+                if (!pdlRoot.isOpen()) {
+                    pdlRoot.toggleBottomView();
+                }
+                pdlRoot.setCanTouch(false);
+            }
             mScaleAnimator.start();
             isConnect = false;
             releaseAll();

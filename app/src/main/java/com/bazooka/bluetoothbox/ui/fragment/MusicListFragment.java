@@ -12,9 +12,9 @@ import com.bazooka.bluetoothbox.R;
 import com.bazooka.bluetoothbox.base.fragment.BaseFragment;
 import com.bazooka.bluetoothbox.bean.Music;
 import com.bazooka.bluetoothbox.bean.event.LocalMusicScanSuccessEvent;
+import com.bazooka.bluetoothbox.bean.event.PlayEvent;
 import com.bazooka.bluetoothbox.cache.MusicCache;
 import com.bazooka.bluetoothbox.ui.adapter.BluetoothMusicAdapter;
-import com.chad.library.adapter.base.BaseQuickAdapter;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -63,6 +63,7 @@ public class MusicListFragment extends BaseFragment {
     public void addViewListener() {
         mAdapter.setOnItemClickListener((adapter, view, position) -> {
             MusicCache.getPlayService().play(position);
+            mAdapter.select(position);
         });
     }
 
@@ -72,6 +73,14 @@ public class MusicListFragment extends BaseFragment {
         mMusicList.clear();
         mMusicList.addAll(event.getMusicList());
         mAdapter.notifyDataSetChanged();
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onPlayPositionChanged(PlayEvent event) {
+        if (mAdapter != null) {
+            mAdapter.select(event.position);
+        }
     }
 
     @Override

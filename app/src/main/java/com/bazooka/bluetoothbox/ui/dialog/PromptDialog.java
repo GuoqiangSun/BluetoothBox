@@ -38,12 +38,13 @@ public class PromptDialog extends BaseDialogFragment {
 
     /**
      * 实例化提示对话框
-     * @param hintContent 提示内容
+     *
+     * @param hintContent  提示内容
      * @param positiveText 确定按钮文字
      * @param negativeText 取消按钮文字
      * @return 对话框
      */
-    public static PromptDialog newInstance(String hintContent, String positiveText, String negativeText){
+    public static PromptDialog newInstance(String hintContent, String positiveText, String negativeText) {
         PromptDialog dialog = new PromptDialog();
         Bundle bundle = new Bundle();
         bundle.putString("hintContent", hintContent);
@@ -89,12 +90,12 @@ public class PromptDialog extends BaseDialogFragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_positive:
-                if(mListener != null){
+                if (mListener != null) {
                     mListener.onPositiveClick();
                 }
                 break;
             case R.id.btn_negative:
-                if(mListener != null){
+                if (mListener != null) {
                     mListener.onNegativeClick();
                 }
                 dismiss();
@@ -104,7 +105,7 @@ public class PromptDialog extends BaseDialogFragment {
         }
     }
 
-    public void setOnButtonClickListener(OnButtonClickListener l){
+    public void setOnButtonClickListener(OnButtonClickListener l) {
         this.mListener = l;
     }
 
@@ -114,7 +115,7 @@ public class PromptDialog extends BaseDialogFragment {
         return super.show(transaction, tag);
     }
 
-    public interface OnButtonClickListener{
+    public interface OnButtonClickListener {
         /**
          * 确定按钮点击
          */

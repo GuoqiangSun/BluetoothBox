@@ -19,7 +19,6 @@ import com.bazooka.bluetoothbox.ui.dialog.PromptDialogV2;
 import com.bazooka.bluetoothbox.ui.fragment.UsbMusicListFragment;
 import com.bazooka.bluetoothbox.ui.fragment.UsbPlayControlFragment;
 import com.bazooka.bluetoothbox.utils.DialogUtils;
-import com.bazooka.bluetoothbox.utils.ToastUtil;
 import com.bazooka.bluetoothbox.utils.ToastUtils;
 import com.bazooka.bluetoothbox.utils.bluetooth.BluzDeviceUtils;
 import com.bazooka.bluetoothbox.utils.bluetooth.BluzManagerUtils;
@@ -32,13 +31,11 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.bazooka.bluetoothbox.application.App.getContext;
-
 /**
  * @author 尹晓童
- *         邮箱：yinxtno1@yeah.net
- *         时间：2017/9/14
- *         作用：USB播放界面
+ * 邮箱：yinxtno1@yeah.net
+ * 时间：2017/9/14
+ * 作用：USB播放界面
  */
 public class UsbModeActivity extends MusicCommonActivity {
 
@@ -180,10 +177,10 @@ public class UsbModeActivity extends MusicCommonActivity {
         usbFragment.setOnButtonClick(new UsbPlayControlFragment.OnButtonClick() {
             @Override
             public void onPlayClick(boolean isPlaying) {
-                if(BluzDeviceUtils.getInstance().getConnectionDevice() == null) {
+                if (BluzDeviceUtils.getInstance().getConnectionDevice() == null) {
                     hintDialog.show();
                     return;
-                } else if(!mBluzManagerUtils.isUhostEnable()) {
+                } else if (!mBluzManagerUtils.isUhostEnable()) {
                     ToastUtils.showShortToast(R.string.no_usb);
                     return;
                 }
@@ -192,38 +189,44 @@ public class UsbModeActivity extends MusicCommonActivity {
                 } else {
                     mMusicManager.play();
                 }
+                int currentPosition = mMusicManager.getCurrentPosition();
+                usbMusicListFragment.play(currentPosition);
             }
 
             @Override
             public void onPreClick() {
-                if(BluzDeviceUtils.getInstance().getConnectionDevice() == null) {
+                if (BluzDeviceUtils.getInstance().getConnectionDevice() == null) {
                     hintDialog.show();
                     return;
-                } else if(!mBluzManagerUtils.isUhostEnable()) {
+                } else if (!mBluzManagerUtils.isUhostEnable()) {
                     ToastUtils.showShortToast(R.string.no_usb);
                     return;
                 }
                 mMusicManager.previous();
+                int currentPosition = mMusicManager.getCurrentPosition();
+                usbMusicListFragment.play(currentPosition);
             }
 
             @Override
             public void onNextClick() {
-                if(BluzDeviceUtils.getInstance().getConnectionDevice() == null) {
+                if (BluzDeviceUtils.getInstance().getConnectionDevice() == null) {
                     hintDialog.show();
                     return;
-                } else if(!mBluzManagerUtils.isUhostEnable()) {
+                } else if (!mBluzManagerUtils.isUhostEnable()) {
                     ToastUtils.showShortToast(R.string.no_usb);
                     return;
                 }
                 mMusicManager.next();
+                int currentPosition = mMusicManager.getCurrentPosition();
+                usbMusicListFragment.play(currentPosition);
             }
         });
 
         usbMusicListFragment.setOnMusicItemClickListener(index -> {
-            if(BluzDeviceUtils.getInstance().getConnectionDevice() == null) {
+            if (BluzDeviceUtils.getInstance().getConnectionDevice() == null) {
                 hintDialog.show();
                 return;
-            } else if(!mBluzManagerUtils.isUhostEnable()) {
+            } else if (!mBluzManagerUtils.isUhostEnable()) {
                 ToastUtils.showShortToast(R.string.no_usb);
                 return;
             }
@@ -251,14 +254,17 @@ public class UsbModeActivity extends MusicCommonActivity {
         super.onStop();
     }
 
+    private boolean finish = false;
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        finish = true;
         if (mHandler != null) {
             mHandler.removeCallbacksAndMessages(null);
             mHandler = null;
         }
-        if(mMusicManager != null) {
+        if (mMusicManager != null) {
             mMusicManager.setOnMusicUIChangedListener(null);
             mMusicManager.setOnMusicEntryChangedListener(null);
             mMusicManager = null;
@@ -277,8 +283,11 @@ public class UsbModeActivity extends MusicCommonActivity {
 
     private void initUsbMode() {
         mMusicManager = mBluzManagerUtils.getBluzManager().getMusicManager(() -> {
+            if (finish) {
+                return;
+            }
             mHandler = new MusicHandler(UsbModeActivity.this, mMusicManager);
-            if(mBluzManagerUtils.isContentChanged() || MusicCache.getInstance().getUsbMusicList().isEmpty()) {
+            if (mBluzManagerUtils.isContentChanged() || MusicCache.getInstance().getUsbMusicList().isEmpty()) {
                 progressDialog.setCancelable(false);
                 progressDialog.setMessage(getString(R.string.loading));
                 progressDialog.show();
