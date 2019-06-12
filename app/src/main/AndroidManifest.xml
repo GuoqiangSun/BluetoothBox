@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:name=".application.App"
@@ -31,6 +32,7 @@
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity android:name=".ui.activity.BluetoothMusicActivity" />
@@ -55,7 +57,7 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".ui.activity.TestActivity"/>
+        <activity android:name=".ui.activity.TestActivity" />
     </application>
 
 </manifest>

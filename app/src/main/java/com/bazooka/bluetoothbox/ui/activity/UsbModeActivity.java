@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 
 import com.actions.ibluz.manager.BluzManagerData;
 import com.actions.ibluz.manager.IMusicManager;
@@ -39,6 +40,9 @@ import java.util.List;
  */
 public class UsbModeActivity extends MusicCommonActivity {
 
+    private static String TAG = "UsbModeActivity";
+
+
     /**
      * 获取USB音乐列表
      */
@@ -53,6 +57,8 @@ public class UsbModeActivity extends MusicCommonActivity {
     private IMusicManager mMusicManager;
     private MusicHandler mHandler;
     private PromptDialogV2 hintDialog;
+
+    private volatile BluzManagerData.MusicEntry lastMusicEntry;
 
 
     private static class MusicHandler extends Handler {
@@ -69,6 +75,7 @@ public class UsbModeActivity extends MusicCommonActivity {
             onPListEntryReadyListener = list -> {
                 UsbModeActivity usbActivity = activityWeakReference.get();
                 if (usbActivity != null) {
+                    Log.v(TAG, " MusicHandler OnPListEntryReadyListener ready:" + list);
                     mPListEntryList.addAll(list);
                     usbActivity.setProgressDialogMessage(usbActivity.getString(
                             R.string.notice_usb_music_loading_message,
@@ -82,6 +89,10 @@ public class UsbModeActivity extends MusicCommonActivity {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             UsbModeActivity activity = activityWeakReference.get();
+            if (musicManager == null) {
+                Log.e(TAG, " MusicHandler musicManager = null ");
+                return;
+            }
             if (activity != null) {
                 switch (msg.what) {
                     case MESSAGE_GET_PLISTENTRY:
@@ -93,9 +104,14 @@ public class UsbModeActivity extends MusicCommonActivity {
                         } else {
                             MusicCache.getInstance().getUsbMusicList().clear();
                             MusicCache.getInstance().getUsbMusicList().addAll(mPListEntryList);
+                            int select = -1;
+                            if (activity.lastMusicEntry != null && activity.usbMusicListFragment != null) {
+                                select = activity.lastMusicEntry.index;
+//                                activity.usbMusicListFragment.playByIndex(activity.lastMusicEntry.index);
+                            }
                             activity.dismissProgressDialog();
                             //To UsbMusicListFragment.addMusicList
-                            EventBus.getDefault().postSticky(new UsbMusicScanSuccessEvent(mPListEntryList));
+                            EventBus.getDefault().postSticky(new UsbMusicScanSuccessEvent(mPListEntryList, select));
                         }
                         break;
                     default:
@@ -185,12 +201,14 @@ public class UsbModeActivity extends MusicCommonActivity {
                     return;
                 }
                 if (isPlaying) {
-                    mMusicManager.pause();
+                    if (mMusicManager != null) {
+                        mMusicManager.pause();
+                    }
                 } else {
-                    mMusicManager.play();
+                    if (mMusicManager != null) {
+                        mMusicManager.play();
+                    }
                 }
-                int currentPosition = mMusicManager.getCurrentPosition();
-                usbMusicListFragment.play(currentPosition);
             }
 
             @Override
@@ -202,9 +220,10 @@ public class UsbModeActivity extends MusicCommonActivity {
                     ToastUtils.showShortToast(R.string.no_usb);
                     return;
                 }
-                mMusicManager.previous();
-                int currentPosition = mMusicManager.getCurrentPosition();
-                usbMusicListFragment.play(currentPosition);
+                if (mMusicManager != null) {
+                    mMusicManager.previous();
+                }
+//                usbMusicListFragment.playPre();
             }
 
             @Override
@@ -216,9 +235,10 @@ public class UsbModeActivity extends MusicCommonActivity {
                     ToastUtils.showShortToast(R.string.no_usb);
                     return;
                 }
-                mMusicManager.next();
-                int currentPosition = mMusicManager.getCurrentPosition();
-                usbMusicListFragment.play(currentPosition);
+                if (mMusicManager != null) {
+                    mMusicManager.next();
+                }
+//                usbMusicListFragment.playNex();
             }
         });
 
@@ -275,9 +295,12 @@ public class UsbModeActivity extends MusicCommonActivity {
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onModeChangedEvent(ModeChangedEvent event) {
         int mode = event.getMode();
+        Log.v(TAG, " UsbModeActivity " + mode);
 
         if (mode == BluzManagerData.FuncMode.USB) {
-            initUsbMode();
+            if (mMusicManager == null) {
+                initUsbMode();
+            }
         }
     }
 
@@ -299,22 +322,47 @@ public class UsbModeActivity extends MusicCommonActivity {
             }
         });
 
-        mMusicManager.setOnMusicUIChangedListener(new BluzManagerData.OnMusicUIChangedListener() {
-            @Override
-            public void onLoopChanged(int i) {
-            }
+        if (mMusicManager != null) {
 
-            @Override
-            public void onStateChanged(int state) {
-                EventBus.getDefault().postSticky(new UsbPlayStateChangeEvent(state));
-            }
-        });
+            mMusicManager.getLyric(new BluzManagerData.OnLyricEntryReadyListener() {
+                @Override
+                public void onReady(byte[] bytes) {
+                    Log.v(TAG, " onReady byte[] bytes:" + (bytes != null ? bytes.length : 0));
+                }
+            });
 
-        mMusicManager.setOnMusicEntryChangedListener(musicEntry ->
-                EventBus.getDefault().postSticky(new UsbMusicChangeEvent(musicEntry.artist,
-                        musicEntry.name,
-                        mMusicManager.getDuration()))
-        );
+            mMusicManager.setOnMusicUIChangedListener(new BluzManagerData.OnMusicUIChangedListener() {
+                @Override
+                public void onLoopChanged(int i) {
+                    Log.v(TAG, " onLoopChanged " + i);
+                }
+
+                @Override
+                public void onStateChanged(int state) {
+                    Log.v(TAG, " onStateChanged " + state);
+                    EventBus.getDefault().postSticky(new UsbPlayStateChangeEvent(state));
+                }
+            });
+
+            mMusicManager.setOnMusicEntryChangedListener(new BluzManagerData.OnMusicEntryChangedListener() {
+                @Override
+                public void onChanged(BluzManagerData.MusicEntry musicEntry) {
+                    lastMusicEntry = musicEntry;
+
+                    Log.v(TAG, "OnMusicEntryChangedListener:" + musicEntry);
+
+                    EventBus.getDefault().postSticky(new UsbMusicChangeEvent(musicEntry.artist,
+                            musicEntry.name,
+                            mMusicManager.getDuration()));
+
+                    if (usbMusicListFragment != null) {
+                        usbMusicListFragment.playByIndex(musicEntry.index);
+                    }
+
+                }
+            });
+        }
+
     }
 
 }

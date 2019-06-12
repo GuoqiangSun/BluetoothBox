@@ -37,7 +37,7 @@ public class UsbMusicAdapter extends BaseQuickAdapter<BluzManagerData.PListEntry
     }
 
 
-    private int selectColor = Color.parseColor("#FFB6C1");
+    private int selectColor = Color.parseColor("#FC2697");
     private int normalColor = Color.parseColor("#FFFFFF");
 
 

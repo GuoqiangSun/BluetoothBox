@@ -43,9 +43,12 @@ public class BluetoothMusicActivity extends MusicCommonActivity {
     private boolean updateFinish = false;
     private ProgressDialog loadingDialog;
 
+    public static boolean isLastPlaying = false;
+
     @Override
     public void initData() {
         mPlayService = MusicCache.getPlayService();
+
         mBluzManagerUtils = BluzManagerUtils.getInstance();
         //设置模式为 蓝牙音乐
         mBluzManagerUtils.setMode(BluzManagerData.FuncMode.A2DP);
@@ -55,7 +58,11 @@ public class BluetoothMusicActivity extends MusicCommonActivity {
         fragments.add(new BluetoothPlayControlFragment());
         fragments.add(new MusicListFragment());
 
-
+        if (mPlayService != null) {
+            if (isLastPlaying && !mPlayService.isPlaying()) {
+                mPlayService.playPause();
+            }
+        }
     }
 
     @Override
@@ -103,40 +110,43 @@ public class BluetoothMusicActivity extends MusicCommonActivity {
 
     @Override
     public void addViewListener() {
-        mPlayService.setOnPlayEventListener(new OnPlayerEventListener() {
-            @Override
-            public void onChange(Music music) {
-                EventBus.getDefault().postSticky(music);
-                PlayEvent playEvent = new PlayEvent(MusicCache.getPlayService().getPlayingPosition());
-                EventBus.getDefault().post(playEvent);
-            }
+        if (mPlayService != null) {
 
-            @Override
-            public void onPlayerStart() {
-                EventBus.getDefault().postSticky(new MusicStateChangeEvent(true));
-                PlayEvent playEvent = new PlayEvent(MusicCache.getPlayService().getPlayingPosition());
-                EventBus.getDefault().post(playEvent);
-            }
+            mPlayService.setOnPlayEventListener(new OnPlayerEventListener() {
+                @Override
+                public void onChange(Music music) {
+                    EventBus.getDefault().postSticky(music);
+                    PlayEvent playEvent = new PlayEvent(MusicCache.getPlayService().getPlayingPosition());
+                    EventBus.getDefault().post(playEvent);
+                }
 
-            @Override
-            public void onPlayerPause() {
-                EventBus.getDefault().postSticky(new MusicStateChangeEvent(false));
-            }
+                @Override
+                public void onPlayerStart() {
+                    EventBus.getDefault().postSticky(new MusicStateChangeEvent(true));
+                    PlayEvent playEvent = new PlayEvent(MusicCache.getPlayService().getPlayingPosition());
+                    EventBus.getDefault().post(playEvent);
+                }
 
-            @Override
-            public void onPublish(int progress) {
+                @Override
+                public void onPlayerPause() {
+                    EventBus.getDefault().postSticky(new MusicStateChangeEvent(false));
+                }
 
-            }
+                @Override
+                public void onPublish(int progress) {
 
-            @Override
-            public void onBufferingUpdate(int percent) {
-            }
+                }
 
-            @Override
-            public void onMusicListUpdate() {
-                loadingDialog.dismiss();
-            }
-        });
+                @Override
+                public void onBufferingUpdate(int percent) {
+                }
+
+                @Override
+                public void onMusicListUpdate() {
+                    loadingDialog.dismiss();
+                }
+            });
+        }
     }
 
     @SuppressWarnings("unused")

@@ -83,5 +83,7 @@ dependencies {
 
     compile 'com.tencent.bugly:crashreport:2.8.6.0'
 
+    compile 'com.blankj:utilcode:1.22.1'
+
     compile 'com.android.support:multidex:1.0.3'
 }

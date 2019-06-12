@@ -33,7 +33,7 @@
     
     <declare-styleable name="PullUpDragLayout">
         <!--底部视图-->
-        <attr name="PullUpDrag_BottomView" format="reference"/>
+        <attr name="PullUpDrag_BottomView" format="reference|integer"/>
         <!--内容视图-->
         <attr name="PullUpDrag_ContentView" format="reference"/>
         <!--边界高度-->

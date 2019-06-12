@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,8 @@ import butterknife.BindView;
  */
 
 public class UsbMusicListFragment extends BaseFragment {
+
+    private String TAG = "UsbModeActivity";
 
     @BindView(R.id.rv_music_list)
     RecyclerView rvMusicList;
@@ -83,9 +86,26 @@ public class UsbMusicListFragment extends BaseFragment {
             musicList.addAll(event.getMusicLisc());
             mAdapter.notifyDataSetChanged();
         }
+        if (event.getSelect() != -1) {
+            playByIndex(event.getSelect());
+        }
     }
 
-    public void play(int position) {
+    public void playByIndex(int index) {
+//        for (int i = 0, length = musicList.size(); i < length; i++) {
+//            if (musicList.get(i).index == index) {
+//                play(i);
+//                break;
+//            }
+//        }
+        int i = index - 1;
+        if (i >= 0 && i < musicList.size()) {
+            play(i);
+        }
+    }
+
+    private void play(int position) {
+        Log.v(TAG, " play " + position);
         if (mAdapter != null) {
             mAdapter.select(position);
         }

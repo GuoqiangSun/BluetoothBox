@@ -11,9 +11,9 @@ import android.widget.TextView;
 import com.bazooka.bluetoothbox.R;
 import com.bazooka.bluetoothbox.base.fragment.BaseFragment;
 import com.bazooka.bluetoothbox.bean.Music;
-import com.bazooka.bluetoothbox.bean.event.PlayEvent;
 import com.bazooka.bluetoothbox.bean.event.VolumeChangedEvent;
 import com.bazooka.bluetoothbox.cache.MusicCache;
+import com.bazooka.bluetoothbox.service.PlayService;
 import com.bazooka.bluetoothbox.ui.activity.BluetoothMusicActivity;
 import com.bazooka.bluetoothbox.utils.DateUtils;
 import com.bazooka.bluetoothbox.utils.SpManager;
@@ -101,19 +101,23 @@ public class BluetoothPlayControlFragment extends BaseFragment {
 
     @OnClick({R.id.iv_play, R.id.iv_pre, R.id.iv_next})
     public void onViewClicked(View view) {
+        PlayService playService = MusicCache.getPlayService();
+        if (playService == null) {
+            return;
+        }
         switch (view.getId()) {
             case R.id.iv_play:
-                if (MusicCache.getPlayService().getPlayingMusic() == null) {
-                    MusicCache.getPlayService().play(0);
+                if (playService.getPlayingMusic() == null) {
+                    playService.play(0);
                 } else {
-                    MusicCache.getPlayService().playPause();
+                    playService.playPause();
                 }
                 break;
             case R.id.iv_pre:
-                MusicCache.getPlayService().prev();
+                playService.prev();
                 break;
             case R.id.iv_next:
-                MusicCache.getPlayService().next();
+                playService.next();
                 break;
             default:
                 break;
@@ -124,6 +128,7 @@ public class BluetoothPlayControlFragment extends BaseFragment {
     public void playStateChanged(BluetoothMusicActivity.MusicStateChangeEvent event) {
         isPlaying = event.isPlaying();
         ivPlay.setImageResource(isPlaying ? R.drawable.ic_pause : R.drawable.ic_play);
+        BluetoothMusicActivity.isLastPlaying = isPlaying;
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)

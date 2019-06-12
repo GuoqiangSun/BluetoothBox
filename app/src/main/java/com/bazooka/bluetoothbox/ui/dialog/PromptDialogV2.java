@@ -1,15 +1,17 @@
 package com.bazooka.bluetoothbox.ui.dialog;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
-import android.support.v4.app.FragmentTransaction;
-import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -17,9 +19,9 @@ import com.bazooka.bluetoothbox.R;
 
 /**
  * @author 尹晓童
- *         邮箱：yinxtno1@yeah.net
- *         时间：2017/10/16
- *         作用：统一的提示弹窗
+ * 邮箱：yinxtno1@yeah.net
+ * 时间：2017/10/16
+ * 作用：统一的提示弹窗
  */
 
 public class PromptDialogV2 extends Dialog implements View.OnClickListener {
@@ -36,7 +38,8 @@ public class PromptDialogV2 extends Dialog implements View.OnClickListener {
     private OnButtonClickListener mListener;
 
     public PromptDialogV2(@NonNull Context context) {
-        this(context, getDefaultDialogTheme(context));
+//        this(context, getDefaultDialogTheme(context));
+        super(context);
     }
 
     public PromptDialogV2(@NonNull Context context, @StyleRes int themeResId) {
@@ -49,6 +52,7 @@ public class PromptDialogV2 extends Dialog implements View.OnClickListener {
         return outValue.resourceId;
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,8 +62,8 @@ public class PromptDialogV2 extends Dialog implements View.OnClickListener {
         btnPositive = (Button) findViewById(R.id.btn_positive);
         btnNegative = (Button) findViewById(R.id.btn_negative);
 
-        btnPositive.setBackgroundResource(R.drawable.bg_dark_grey);
-        btnNegative.setBackgroundResource(R.drawable.bg_light_blue);
+        btnPositive.setBackgroundResource(R.drawable.bg_dark_grey_n);
+        btnNegative.setBackgroundResource(R.drawable.bg_light_blue_n);
 
         btnPositive.setOnClickListener(this);
         btnNegative.setOnClickListener(this);
@@ -83,13 +87,30 @@ public class PromptDialogV2 extends Dialog implements View.OnClickListener {
         tvHint.setText(mHint);
         btnPositive.setText(mPositiveText);
         btnNegative.setText(mNegativeText);
+
+        //设置背景半透明
+        DisplayMetrics dm = new DisplayMetrics();
+        Activity ownerActivity = getOwnerActivity();
+        if (ownerActivity != null) {
+            ownerActivity.getWindowManager().getDefaultDisplay().getMetrics(dm);
+        }
+        Window window = getWindow();
+        if (window != null) {
+//            window.setLayout(dm.widthPixels, window.getAttributes().height);
+
+//            int selectColor = Color.parseColor("#0E000080");
+//            window.setBackgroundDrawable(new ColorDrawable(selectColor));
+
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+
     }
 
-    public void setPositiveBackground(int resId){
+    public void setPositiveBackground(int resId) {
         btnPositive.setBackgroundResource(resId);
     }
 
-    public void setNegativeBackground(int resId){
+    public void setNegativeBackground(int resId) {
         btnNegative.setBackgroundResource(resId);
     }
 
@@ -117,12 +138,12 @@ public class PromptDialogV2 extends Dialog implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_positive:
-                if(mListener != null){
+                if (mListener != null) {
                     mListener.onPositiveClick();
                 }
                 break;
             case R.id.btn_negative:
-                if(mListener != null){
+                if (mListener != null) {
                     mListener.onNegativeClick();
                 }
                 break;
@@ -131,12 +152,12 @@ public class PromptDialogV2 extends Dialog implements View.OnClickListener {
         }
     }
 
-    public void setOnButtonClickListener(OnButtonClickListener l){
+    public void setOnButtonClickListener(OnButtonClickListener l) {
         this.mListener = l;
     }
 
 
-    public interface OnButtonClickListener{
+    public interface OnButtonClickListener {
         /**
          * 确定按钮点击
          */

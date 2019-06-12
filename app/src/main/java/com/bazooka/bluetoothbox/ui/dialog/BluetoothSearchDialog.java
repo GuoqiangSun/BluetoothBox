@@ -156,7 +156,7 @@ public class BluetoothSearchDialog extends BaseDialogFragment {
 //                Logger.d(device.getName() + ":" + device.getAddress());
                 if (device != null) {
                     String name = device.getName();
-                    if (name != null && (name.contains("G2") || name.contains("g2"))) {
+                    if (name != null && (name.contains("G2") || name.contains("g2")) && (!name.contains("ble"))) {
                         if (findDevice(device) == null) {
                             mDeviceList.add(new BluetoothDeviceBean(device,
                                     BluzDeviceFactory.ConnectionState.SPP_DISCONNECTED));

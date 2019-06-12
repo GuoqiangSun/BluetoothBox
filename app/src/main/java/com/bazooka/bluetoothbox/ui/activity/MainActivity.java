@@ -3,19 +3,26 @@ package com.bazooka.bluetoothbox.ui.activity;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
+import android.app.AppOpsManager;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Binder;
+import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.os.Process;
+import android.support.annotation.Nullable;
+import android.support.v4.app.AppOpsManagerCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bazooka.bluetoothbox.R;
 import com.bazooka.bluetoothbox.base.activity.BaseActivity;
@@ -28,6 +35,7 @@ import com.bazooka.bluetoothbox.cache.db.SendSuccessFlashHelper;
 import com.bazooka.bluetoothbox.cache.db.entity.LedFlash;
 import com.bazooka.bluetoothbox.cache.db.entity.SendSuccessFlash;
 import com.bazooka.bluetoothbox.listener.NoDoubleClickListener;
+import com.bazooka.bluetoothbox.service.PlayService;
 import com.bazooka.bluetoothbox.ui.dialog.BluetoothSearchDialog;
 import com.bazooka.bluetoothbox.ui.dialog.PromptDialog;
 import com.bazooka.bluetoothbox.ui.dialog.PromptDialogV2;
@@ -44,6 +52,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 import butterknife.BindView;
@@ -66,6 +75,8 @@ public class MainActivity extends BaseActivity {
 
     @BindView(R.id.pdl_root)
     PullUpDragLayout pdlRoot;
+    @BindView(R.id.bluetooth_menu)
+    LinearLayout bottomLay;
     @BindView(R.id.btn_bluetooth)
     ImageButton btnBluetooth;
     @BindView(R.id.btn_fm)
@@ -105,7 +116,6 @@ public class MainActivity extends BaseActivity {
 
     private HandlerThread saveDefaultFlashThread;
     private Handler saveDefaultFlashHandler;
-    private boolean connected;
 
     private PromptDialogV2 hintDialog;
 
@@ -163,14 +173,20 @@ public class MainActivity extends BaseActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                pdlRoot.toggleBottomView();
-
+                Log.v(TAG, "toggleBottomView");
+                pdlRoot.toggleBottomView(bottomLay);
             }
         }, 100);
 
 ////     //todo  测试
 //        SpManager.getInstance().saveDeviceName("BAZ-G2-FM");
 
+    }
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.e(TAG, " onCreate ");
     }
 
     @Override
@@ -241,6 +257,52 @@ public class MainActivity extends BaseActivity {
 
     }
 
+    /**
+     * 检查权限列表
+     *
+     * @param context
+     * @param op       这个值被hide了，去AppOpsManager类源码找，如位置权限  AppOpsManager.OP_GPS==2
+     * @param opString 如判断定位权限 AppOpsManager.OPSTR_FINE_LOCATION
+     * @return @see 如果返回值 AppOpsManagerCompat.MODE_IGNORED 表示被禁用了
+     */
+    public static int checkOp(Context context, int op, String opString) {
+        final int version = Build.VERSION.SDK_INT;
+        if (version >= 19) {
+            Object object = context.getSystemService(Context.APP_OPS_SERVICE);
+//            Object object = context.getSystemService("appops");
+            Class c = object.getClass();
+            try {
+                Class[] cArg = new Class[3];
+                cArg[0] = int.class;
+                cArg[1] = int.class;
+                cArg[2] = String.class;
+                Method lMethod = c.getDeclaredMethod("checkOp", cArg);
+                return (Integer) lMethod.invoke(object, op, Binder.getCallingUid(), context.getPackageName());
+            } catch (Exception e) {
+                e.printStackTrace();
+                if (Build.VERSION.SDK_INT >= 23) {
+                    return AppOpsManagerCompat.noteOp(context, opString, context.getApplicationInfo().uid,
+                            context.getPackageName());
+                }
+
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * 检查定位服务、权限
+     */
+    private void checkLocationPermission() {
+        //其中2代表AppOpsManager.OP_GPS，如果要判断悬浮框权限，第二个参数需换成24即AppOpsManager。
+        // OP_SYSTEM_ALERT_WINDOW及，第三个参数需要换成AppOpsManager.OPSTR_SYSTEM_ALERT_WINDOW
+        int checkResult = checkOp(this, 2, AppOpsManager.OPSTR_FINE_LOCATION);
+        int checkResult2 = checkOp(this, 1, AppOpsManager.OPSTR_FINE_LOCATION);
+        Log.e(TAG, " checkLocationPermission checkResult:" + checkResult + " checkResult2:" + checkResult2);
+        if (AppOpsManagerCompat.MODE_ALLOWED == checkResult || AppOpsManagerCompat.MODE_ALLOWED == checkResult2) {
+        }
+    }
+
     @Override
     public void addViewListener() {
 
@@ -251,6 +313,7 @@ public class MainActivity extends BaseActivity {
                 if (isConnect) {
                     mClosePromptDialog.show(getSupportFragmentManager(), DISCONNECT_DIALOG_TAG);
                 } else {
+//                    checkLocationPermission();
                     mSearchDialog.show(getSupportFragmentManager(), BLUETOOTH_SEARCH_DIALOG_TAG);
                 }
             }
@@ -382,12 +445,21 @@ public class MainActivity extends BaseActivity {
             Log.e(TAG, " onConnectionStateChanged device == null");
             return;
         }
-        connected = event.isConnected();
+
+        isConnect = event.isConnected();
         Log.e(TAG, " onConnectionStateChanged:" + device.getName());
+        if (pdlRoot != null) {
+            pdlRoot.setBleCon(isConnect);
+        }
         if (event.isConnected()) {
+
             if (pdlRoot != null) {
+                if (pdlRoot.isOpen()) {
+                    pdlRoot.toggleBottomView();
+                }
                 pdlRoot.setCanTouch(true);
             }
+
             mScaleAnimator.end();
             connectedDevice = device;
             SpManager.getInstance().saveDeviceAddress(device.getAddress());
@@ -397,17 +469,21 @@ public class MainActivity extends BaseActivity {
             ivBluetoothState.setSelected(true);
             tvBluetoothInfo.setText(getString(R.string.bluetooth_info, device.getName(), device.getAddress()));
 
-            if (device.getName() != null && device.getName().startsWith("BAZ-G2-FM")) {
-                btnAux.setVisibility(View.GONE);
-                btnSwitch.setVisibility(View.GONE);
-                btnFm.setVisibility(View.VISIBLE);
+            if (device.getName() != null) {
+                if (device.getName().startsWith("BAZ-G2-FM")) {
+                    btnAux.setVisibility(View.GONE);
+                    btnSwitch.setVisibility(View.GONE);
+                    btnFm.setVisibility(View.VISIBLE);
+                } else if (device.getName().startsWith("BAZ-G2")) {
+                    btnAux.setVisibility(View.VISIBLE);
+                    btnSwitch.setVisibility(View.VISIBLE);
+                    btnFm.setVisibility(View.GONE);
+                } else {
+                    Toast.makeText(getApplicationContext(), "unknown device name", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(getApplicationContext(), "unknown device name", Toast.LENGTH_SHORT).show();
             }
-//            else if (device.getName().equals("BAZ-G2")) {
-//                btnAux.setVisibility(View.VISIBLE);
-//                btnSwitch.setVisibility(View.VISIBLE);
-//                btnFm.setVisibility(View.GONE);
-//            }
-
 
         } else {
             if (pdlRoot != null) {
@@ -420,7 +496,10 @@ public class MainActivity extends BaseActivity {
             isConnect = false;
             releaseAll();
             DialogFragmentUtils.dismissDialog(getSupportFragmentManager(), DISCONNECT_DIALOG_TAG);
-            MusicCache.getPlayService().pause();
+            PlayService playService = MusicCache.getPlayService();
+            if (playService != null) {
+                playService.pause();
+            }
             ivPhone.setSelected(false);
             ivBluetoothState.setSelected(false);
             mScaleAnimator.start();

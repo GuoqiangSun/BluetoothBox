@@ -1,6 +1,8 @@
 package com.bazooka.bluetoothbox.utils.bluetooth;
 
 
+import android.util.Log;
+
 import com.actions.ibluz.factory.IBluzDevice;
 import com.actions.ibluz.manager.BluzManager;
 import com.actions.ibluz.manager.BluzManagerData;
@@ -16,7 +18,6 @@ import com.bazooka.bluetoothbox.bean.event.VolumeChangedEvent;
 import com.bazooka.bluetoothbox.cache.MusicCache;
 import com.bazooka.bluetoothbox.utils.HexUtils;
 import com.bazooka.bluetoothbox.utils.SpManager;
-import com.orhanobut.logger.Logger;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -28,6 +29,8 @@ import org.greenrobot.eventbus.EventBus;
  */
 
 public class BluzManagerUtils {
+
+    public static String TAG = "BluzManagerUtils";
 
     private final int KEY_LED_SET = BluzManager.buildKey(BluzManagerData.CommandType.SET, 0x81);
     //灯控状态相关
@@ -51,6 +54,18 @@ public class BluzManagerUtils {
     private int curMode;
 
     private BluzManagerUtils() {
+        if (BuildConfig.DEBUG) {
+            Log.v(TAG, " KEY_LED_SET:  0x" + Integer.toHexString(KEY_LED_SET));
+            Log.v(TAG, " KEY_QUE_LIGHT_CONTROL_STATE:  0x" + Integer.toHexString(KEY_QUE_LIGHT_CONTROL_STATE));
+            Log.v(TAG, " KEY_ANS_LIGHT_CONTROL_STATE:  0x" + Integer.toHexString(KEY_ANS_LIGHT_CONTROL_STATE));
+            Log.v(TAG, " KEY_QUE_FLASH_STATE:  0x" + Integer.toHexString(KEY_QUE_FLASH_STATE));
+            Log.v(TAG, " KEY_ANS_FLASH_STATE:  0x" + Integer.toHexString(KEY_ANS_FLASH_STATE));
+            Log.v(TAG, " KEY_QUE_QUERY_MCU_VERSION:  0x" + Integer.toHexString(KEY_QUE_QUERY_MCU_VERSION));
+            Log.v(TAG, " KEY_ANS_QUERY_MCU_VERSION:  0x" + Integer.toHexString(KEY_ANS_QUERY_MCU_VERSION));
+            Log.v(TAG, " KEY_SET_UPDATE:  0x" + Integer.toHexString(KEY_SET_UPDATE));
+            Log.v(TAG, " KEY_QUE_UPDATE:  0x" + Integer.toHexString(KEY_QUE_UPDATE));
+            Log.v(TAG, " KEY_ANS_UPDATE:  0x" + Integer.toHexString(KEY_ANS_UPDATE));
+        }
     }
 
     private static final class Holder {
@@ -79,6 +94,7 @@ public class BluzManagerUtils {
                     mBluzManager.setOnGlobalUIChangedListener(new BluzManagerData.OnGlobalUIChangedListener() {
                         @Override
                         public void onEQChanged(int eq) {
+                            Log.v(TAG, "onEQChanged:" + eq);
                         }
 
                         @Override
@@ -93,7 +109,7 @@ public class BluzManagerUtils {
 
                         @Override
                         public void onModeChanged(int mode) {
-                            Logger.d("onModeChanged   mode == " + mode);
+                            Log.d(TAG, "onModeChanged   mode == " + mode);
                             curMode = mode;
                             EventBus.getDefault().post(new ModeChangedEvent(mode));
                         }
@@ -158,6 +174,7 @@ public class BluzManagerUtils {
         mBluzManager = null;
     }
 
+
     /**
      * 设置模式
      *
@@ -165,11 +182,14 @@ public class BluzManagerUtils {
      */
     public void setMode(int mode) {
         if (mBluzManager == null) {
+            Log.e(TAG, "setMode mBluzManager == null :" + mode);
             return;
         }
-        if (mode != BluzManagerData.FuncMode.A2DP && MusicCache.getPlayService() != null && MusicCache.getPlayService().isPlaying()) {
+        if (mode != BluzManagerData.FuncMode.A2DP && MusicCache.getPlayService() != null
+                && MusicCache.getPlayService().isPlaying()) {
             MusicCache.getPlayService().playPause();
         }
+        Log.v(TAG, "setMode:" + mode);
         mBluzManager.setMode(mode);
     }
 
@@ -251,12 +271,15 @@ public class BluzManagerUtils {
         }
         mBluzManager.setOnCustomCommandListener((what, param1, param2, bytes) -> {
             if (BuildConfig.DEBUG) {
-                if (bytes == null) {
-                    Logger.d("param1：" + param1 + "   param2: " + param2 + "\n数据：null");
-                } else {
-                    Logger.d("param1：" + param1 + "   param2: " + param2
-                            + "\n数据：" + HexUtils.bytes2hex(bytes));
-                }
+                Log.d(TAG, "rec Command what: 0x" + Integer.toHexString(what)
+                                + " param1：0x" + Integer.toHexString(param1)
+                                + "   param2: 0x" + Integer.toHexString(param2)
+                                + (
+                                (bytes == null)
+                                        ? " 数据：null"
+                                        : (" 数据：" + HexUtils.bytes2hex(bytes))
+                        )
+                );
             }
             EventBus.getDefault().post(new CustomCommandEvent(what, param1, param2, bytes));
         });
@@ -273,6 +296,22 @@ public class BluzManagerUtils {
     public IBluzManager getIBluzManager() {
 
         return mBluzManager;
+    }
+
+    /**
+     * 打开、关闭 LED 灯
+     */
+    public void open() {
+        Log.v(TAG, " open led");
+        sendCommand(0x54, (byte) 0x01);
+    }
+
+    /**
+     * 打开、关闭 LED 灯
+     */
+    public void close() {
+        Log.v(TAG, " close led");
+        sendCommand(0x54, (byte) 0x00);
     }
 
     /**
@@ -331,8 +370,8 @@ public class BluzManagerUtils {
     public void sendSwitch(int index, int state) {
         //高四位为继电器下标，低四位为开关状态
         if (BuildConfig.DEBUG) {
-            Logger.d("继电器==> " + Integer.toHexString(index) + Integer.toHexString(state));
-            Logger.d("继电器 2进制==> " + Integer.toBinaryString(index) + Integer.toBinaryString(state));
+            Log.d(TAG, "send Switch what: 0x" + Integer.toHexString(index) + " state: 0x" + Integer.toHexString(state));
+            Log.d(TAG, "send Switch 2进制==> " + Integer.toBinaryString(index) + Integer.toBinaryString(state));
         }
         String dateString = Integer.toHexString(index) + Integer.toHexString(state);
         sendCommand(0x66, (byte) Integer.parseInt(dateString, 16));
@@ -401,12 +440,15 @@ public class BluzManagerUtils {
             return;
         }
         if (BuildConfig.DEBUG) {
-            if (data == null) {
-                Logger.d("指令：0x" + Integer.toHexString(param1) + "    数据长度：0\n数据：null");
-            } else {
-                Logger.d("指令：0x" + Integer.toHexString(param1) + "    数据长度：" + data.length
-                        + "\n数据：" + HexUtils.bytes2hex(data));
-            }
+            Log.d(TAG, "send Command cmd：0x" + Integer.toHexString(key)
+                            + " param1:" + Integer.toHexString(param1)
+                            + " param2:" + Integer.toHexString(param2)
+                            + (
+                            (data == null)
+                                    ? " 数据长度：0 数据：null"
+                                    : (" 数据长度：" + data.length + " 数据：" + HexUtils.bytes2hex(data))
+                    )
+            );
         }
 
         mBluzManager.sendCustomCommand(key, param1, param2, data);

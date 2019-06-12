@@ -17,10 +17,10 @@
         android:background="@drawable/bg_green"
         android:gravity="center"
         android:orientation="vertical"
-        android:paddingBottom="50dp"
         android:paddingLeft="20dp"
+        android:paddingTop="50dp"
         android:paddingRight="20dp"
-        android:paddingTop="50dp">
+        android:paddingBottom="50dp">
 
         <ImageButton
             android:id="@+id/btn_bluetooth"
@@ -70,9 +70,9 @@
             android:background="@null"
             android:contentDescription="@null"
             android:padding="0dp"
-
             android:scaleType="fitCenter"
-            android:src="@drawable/icon_main_aux" />
+            android:src="@drawable/icon_main_aux"
+            android:visibility="gone" />
 
         <ImageButton
             android:id="@+id/btn_led"
@@ -94,9 +94,9 @@
             android:background="@null"
             android:contentDescription="@null"
             android:padding="0dp"
-
             android:scaleType="fitCenter"
-            android:src="@drawable/icon_main_switch" />
+            android:src="@drawable/icon_main_switch"
+            android:visibility="gone" />
 
 
     </LinearLayout>

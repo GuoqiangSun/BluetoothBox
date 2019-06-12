@@ -62,7 +62,9 @@ public class MusicListFragment extends BaseFragment {
     @Override
     public void addViewListener() {
         mAdapter.setOnItemClickListener((adapter, view, position) -> {
-            MusicCache.getPlayService().play(position);
+            if (MusicCache.getPlayService() != null) {
+                MusicCache.getPlayService().play(position);
+            }
             mAdapter.select(position);
         });
     }

@@ -1,6 +1,7 @@
 package com.bazooka.bluetoothbox.ui.activity;
 
 import android.app.ProgressDialog;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -216,7 +217,8 @@ public class LEDMainActivity extends BaseActivity implements SeekBar.OnSeekBarCh
         sbBrightness.setProgress(ledBrightness);
         sbSpeed.setProgress(ledSpeed);
 
-        if (!SpManager.getInstance().getConnectDeviceNAME().equals("") && SpManager.getInstance().getConnectDeviceNAME().equals("BAZ-G2-FM")) {
+        if (!SpManager.getInstance().getConnectDeviceNAME().equals("")
+                && SpManager.getInstance().getConnectDeviceNAME().equals("BAZ-G2-FM")) {
             llRgbInfo.setVisibility(View.GONE);
             ivMenu.setVisibility(View.GONE);
             if (sendSuccessFlasheList != null) {
@@ -240,9 +242,11 @@ public class LEDMainActivity extends BaseActivity implements SeekBar.OnSeekBarCh
         mBluzManagerUtils.queryLedAndLightState();
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
+
     }
 
     @Override
@@ -251,21 +255,18 @@ public class LEDMainActivity extends BaseActivity implements SeekBar.OnSeekBarCh
             mBluzManagerUtils.sendColor(item.intValue(),
                     mGPicker.getSelectedItem().intValue(),
                     mBPicker.getSelectedItem().intValue());
-            mBluzManagerUtils.queryLedAndLightState();
         });
 
         mGPicker.setOnWheelListener((index, item) -> {
             mBluzManagerUtils.sendColor(mRPicker.getSelectedItem().intValue(),
                     item.intValue(),
                     mBPicker.getSelectedItem().intValue());
-            mBluzManagerUtils.queryLedAndLightState();
         });
 
         mBPicker.setOnWheelListener((index, item) -> {
             mBluzManagerUtils.sendColor(mRPicker.getSelectedItem().intValue(),
                     mGPicker.getSelectedItem().intValue(),
                     item.intValue());
-            mBluzManagerUtils.queryLedAndLightState();
         });
 
         colorPickerView.setOnColorChangedListener(new ColorPickView.OnColorChangedListener() {
@@ -282,7 +283,6 @@ public class LEDMainActivity extends BaseActivity implements SeekBar.OnSeekBarCh
                 mGPicker.getWheelView().setSelectedIndex(green);
                 mBPicker.getWheelView().setSelectedIndex(blue);
                 mBluzManagerUtils.sendColor(red, green, blue);
-                mBluzManagerUtils.queryLedAndLightState();
             }
         });
 
@@ -305,6 +305,10 @@ public class LEDMainActivity extends BaseActivity implements SeekBar.OnSeekBarCh
                 }
                 mBluzManagerUtils.sendDemo();
                 mBluzManagerUtils.queryLedAndLightState();
+                if (mLastClickImg != null) {
+                    mLastClickImg.setBackgroundResource(0);
+                    mLastClickImg = null;
+                }
                 break;
             //SWITCH
             case R.id.iv_switch:
@@ -312,8 +316,17 @@ public class LEDMainActivity extends BaseActivity implements SeekBar.OnSeekBarCh
                     hintDialog.show();
                     return;
                 }
-                mBluzManagerUtils.openOrCloseLed();
+                if (ivSwitch.isSelected()) {
+                    mBluzManagerUtils.close();
+                } else {
+                    mBluzManagerUtils.open();
+                }
+//                mBluzManagerUtils.openOrCloseLed();
                 mBluzManagerUtils.queryLedAndLightState();
+                if (mLastClickImg != null) {
+                    mLastClickImg.setBackgroundResource(0);
+                    mLastClickImg = null;
+                }
                 break;
             case R.id.iv_menu:
                 showActivity(LEDCustomerActivity.class);
@@ -334,6 +347,10 @@ public class LEDMainActivity extends BaseActivity implements SeekBar.OnSeekBarCh
                     mBluzManagerUtils.sendFlash(sendSuccessFlasheList.get(curPosition).getIndex());
                     tvModeName.setText(sendSuccessFlasheList.get(curPosition).getFlashName());
                     mBluzManagerUtils.queryLedAndLightState();
+                    if (mLastClickImg != null) {
+                        mLastClickImg.setBackgroundResource(0);
+                        mLastClickImg = null;
+                    }
                 }
                 break;
             //下一个模式
@@ -349,78 +366,91 @@ public class LEDMainActivity extends BaseActivity implements SeekBar.OnSeekBarCh
                     mBluzManagerUtils.sendFlash(sendSuccessFlasheList.get(curPosition % size).getIndex());
                     tvModeName.setText(sendSuccessFlasheList.get(curPosition).getFlashName());
                     mBluzManagerUtils.queryLedAndLightState();
+                    if (mLastClickImg != null) {
+                        mLastClickImg.setBackgroundResource(0);
+                        mLastClickImg = null;
+                    }
                 }
                 break;
             case R.id.iv_fm_version_yellow:
-                ivFmVersionYellow.setBackgroundResource(R.drawable.fm_version_select_n);
                 if (mLastClickImg != null) {
                     mLastClickImg.setBackgroundResource(0);
                 }
+                ivFmVersionYellow.setBackgroundResource(R.drawable.fm_version_select_n);
                 mBluzManagerUtils.sendColor(255, 255, 0);
+                mBluzManagerUtils.queryLedAndLightState();
                 mLastClickImg = ivFmVersionYellow;
                 break;
             case R.id.iv_fm_version_purple:
-                ivFmVersionPurple.setBackgroundResource(R.drawable.fm_version_select_n);
                 if (mLastClickImg != null) {
                     mLastClickImg.setBackgroundResource(0);
                 }
+                ivFmVersionPurple.setBackgroundResource(R.drawable.fm_version_select_n);
                 mBluzManagerUtils.sendColor(255, 0, 255);
+                mBluzManagerUtils.queryLedAndLightState();
                 mLastClickImg = ivFmVersionPurple;
                 break;
             case R.id.iv_fm_version_blue:
-                ivFmVersionBlue.setBackgroundResource(R.drawable.fm_version_select_n);
                 if (mLastClickImg != null) {
                     mLastClickImg.setBackgroundResource(0);
                 }
+                ivFmVersionBlue.setBackgroundResource(R.drawable.fm_version_select_n);
                 mBluzManagerUtils.sendColor(0, 255, 255);
+                mBluzManagerUtils.queryLedAndLightState();
                 mLastClickImg = ivFmVersionBlue;
                 break;
             case R.id.iv_fm_version_red:
-                ivFmVersionRed.setBackgroundResource(R.drawable.fm_version_select_n);
                 if (mLastClickImg != null) {
                     mLastClickImg.setBackgroundResource(0);
                 }
+                ivFmVersionRed.setBackgroundResource(R.drawable.fm_version_select_n);
                 mBluzManagerUtils.sendColor(255, 40, 40);
+                mBluzManagerUtils.queryLedAndLightState();
                 mLastClickImg = ivFmVersionRed;
                 break;
             case R.id.iv_fm_version_orange:
-                ivFmVersionOrange.setBackgroundResource(R.drawable.fm_version_select_n);
                 if (mLastClickImg != null) {
                     mLastClickImg.setBackgroundResource(0);
                 }
+                ivFmVersionOrange.setBackgroundResource(R.drawable.fm_version_select_n);
                 mBluzManagerUtils.sendColor(255, 100, 50);
+                mBluzManagerUtils.queryLedAndLightState();
                 mLastClickImg = ivFmVersionOrange;
                 break;
             case R.id.iv_fm_version_mazarine:
-                ivFmVersionMazarine.setBackgroundResource(R.drawable.fm_version_select_n);
                 if (mLastClickImg != null) {
                     mLastClickImg.setBackgroundResource(0);
                 }
+                ivFmVersionMazarine.setBackgroundResource(R.drawable.fm_version_select_n);
                 mBluzManagerUtils.sendColor(65, 150, 255);
+                mBluzManagerUtils.queryLedAndLightState();
                 mLastClickImg = ivFmVersionMazarine;
                 break;
             case R.id.iv_fm_version_green:
-                ivFmVersionGreen.setBackgroundResource(R.drawable.fm_version_select_n);
                 if (mLastClickImg != null) {
                     mLastClickImg.setBackgroundResource(0);
                 }
+                ivFmVersionGreen.setBackgroundResource(R.drawable.fm_version_select_n);
                 mBluzManagerUtils.sendColor(0, 255, 100);
+                mBluzManagerUtils.queryLedAndLightState();
                 mLastClickImg = ivFmVersionGreen;
                 break;
             case R.id.iv_fm_version_dark_yellow:
-                ivFmVersionDarkYellow.setBackgroundResource(R.drawable.fm_version_select_n);
                 if (mLastClickImg != null) {
                     mLastClickImg.setBackgroundResource(0);
                 }
+                ivFmVersionDarkYellow.setBackgroundResource(R.drawable.fm_version_select_n);
                 mBluzManagerUtils.sendColor(255, 235, 53);
+                mBluzManagerUtils.queryLedAndLightState();
                 mLastClickImg = ivFmVersionDarkYellow;
                 break;
             case R.id.iv_fm_version_emerald:
-                ivFmVersionEmerald.setBackgroundResource(R.drawable.fm_version_select_n);
                 if (mLastClickImg != null) {
                     mLastClickImg.setBackgroundResource(0);
                 }
+                ivFmVersionEmerald.setBackgroundResource(R.drawable.fm_version_select_n);
                 mBluzManagerUtils.sendColor(65, 255, 70);
+                mBluzManagerUtils.queryLedAndLightState();
                 mLastClickImg = ivFmVersionEmerald;
                 break;
             default:
@@ -503,6 +533,7 @@ public class LEDMainActivity extends BaseActivity implements SeekBar.OnSeekBarCh
             String binaryResult = String.format("%8s", Integer.toBinaryString(event.getParam1()))
                     .replaceAll(" ", "0");
             char ledState = binaryResult.charAt(0);
+            Log.v(BluzManagerUtils.TAG, " onCustomCommand KEY_ANS_LIGHT_CONTROL_STATE ledState:" + ledState);
             ivSwitch.setSelected(ledState == '1');
         }
     }

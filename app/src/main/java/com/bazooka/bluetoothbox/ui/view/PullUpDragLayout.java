@@ -81,29 +81,55 @@ public class PullUpDragLayout extends ViewGroup {
         LayoutInflater mLayoutInflater = LayoutInflater.from(context);
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.PullUpDragLayout);
 
-        if (typedArray.hasValue(R.styleable.PullUpDragLayout_PullUpDrag_BottomView)) {
-            mBottomView = mLayoutInflater.inflate(
-                    typedArray.getResourceId(R.styleable.PullUpDragLayout_PullUpDrag_BottomView, 0),
-                    this, true);
-        }
-        if (typedArray.hasValue(R.styleable.PullUpDragLayout_PullUpDrag_ContentView)) {
-            mContentView = mLayoutInflater.inflate(
-                    typedArray.getResourceId(R.styleable.PullUpDragLayout_PullUpDrag_ContentView, 0),
-                    this, true);
+//        if (typedArray.hasValue(R.styleable.PullUpDragLayout_PullUpDrag_BottomView)) {
+//            int resourceId = typedArray.getResourceId(R.styleable.PullUpDragLayout_PullUpDrag_BottomView, 0);
+//            Log.v(TAG, " pull up dragLayout init mBottomView " + resourceId);
+//            mBottomView = mLayoutInflater.inflate(resourceId, this, true);
+//        }
+//
+//        if (typedArray.hasValue(R.styleable.PullUpDragLayout_PullUpDrag_ContentView)) {
+//            int resourceId = typedArray.getResourceId(R.styleable.PullUpDragLayout_PullUpDrag_ContentView, 0);
+//            Log.v(TAG, " pull up dragLayout init mContentView " + resourceId);
+//            mContentView = mLayoutInflater.inflate(resourceId, null, true);
+//        }
+
+        if (typedArray.hasValue(R.styleable.PullUpDragLayout_PullUpDrag_BottomBorderHeight)) {
+            Log.v(TAG, " pull up dragLayout hasValue PullUpDragLayout_PullUpDrag_BottomBorderHeight ");
         }
 
         mBottomBorder = typedArray.getDimensionPixelSize(
                 R.styleable.PullUpDragLayout_PullUpDrag_BottomBorderHeight, 20);
+        Log.v(TAG, " pull up mBottomBorder " + mBottomBorder);
 
         typedArray.recycle();
 
+        Log.v(TAG, " ViewDragHelper.create() ");
         mViewDragHelper = ViewDragHelper.create(this, 1.0f, mDragCallback);
+
+//        mContentView = getChildAt(0);
+//        mBottomView = getChildAt(1);
+    }
+
+
+    public void setBleCon(boolean con) {
+//        this.isOpen = con;
+        Log.v(TAG, "PullUpDragLayout setBleCon " + con);
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        Log.v(TAG, "PullUpDragLayout onFinishInflate ");
+        mContentView = getChildAt(0);
+        mBottomView = getChildAt(1);
+//        toggleBottomView();
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        mContentView = getChildAt(0);
-        mBottomView = getChildAt(1);
+        Log.v(TAG, "PullUpDragLayout onMeasure ");
+//        mContentView = getChildAt(0);
+//        mBottomView = getChildAt(1);
 
         measureChild(mBottomView, widthMeasureSpec, heightMeasureSpec);
         int bottomHeight = mBottomView.getMeasuredHeight();
@@ -122,8 +148,9 @@ public class PullUpDragLayout extends ViewGroup {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        mContentView = getChildAt(0);
-        mBottomView = getChildAt(1);
+//        mContentView = getChildAt(0);
+//        mBottomView = getChildAt(1);
+        Log.v(TAG, "PullUpDragLayout onLayout isOpen:" + isOpen);
 
         mContentView.layout(getPaddingLeft(), getPaddingTop(),
                 getWidth() - getPaddingRight(), mContentView.getMeasuredHeight());
@@ -142,11 +169,15 @@ public class PullUpDragLayout extends ViewGroup {
         mAutoBackTopPos.y = mContentView.getHeight() - mBottomView.getHeight();
         mBoundTopY = mContentView.getHeight() - mBottomView.getHeight() / 4;
         mBoundBottomY = mContentView.getHeight() - mBottomView.getHeight() / 4 * 3;
+
     }
+
+    private String TAG = "bluz";
 
     ViewDragHelper.Callback mDragCallback = new ViewDragHelper.Callback() {
         @Override
         public boolean tryCaptureView(View child, int pointerId) {
+            Log.d(TAG, " tryCaptureView :");
             return mBottomView == child;
         }
 
@@ -157,6 +188,7 @@ public class PullUpDragLayout extends ViewGroup {
 
         @Override
         public int clampViewPositionVertical(View child, int top, int dy) {
+
             int topBound = mContentView.getHeight() - mBottomView.getHeight();
             int bottomBound = mContentView.getHeight() - mBottomBorder;
             return Math.min(bottomBound, Math.max(top, topBound));
@@ -164,7 +196,7 @@ public class PullUpDragLayout extends ViewGroup {
 
         @Override
         public int getViewVerticalDragRange(View child) {
-            Log.d("pullUp", " getViewVerticalDragRange :");
+            Log.d(TAG, " getViewVerticalDragRange :");
             startSlide = false;
             return getMeasuredHeight() - child.getMeasuredHeight();
         }
@@ -172,19 +204,19 @@ public class PullUpDragLayout extends ViewGroup {
         @Override
         public void onEdgeDragStarted(int edgeFlags, int pointerId) {
             super.onEdgeDragStarted(edgeFlags, pointerId);
-            Log.d("pullUp", " onEdgeDragStarted edgeFlags:" + edgeFlags + " pointerId:" + pointerId);
+            Log.d(TAG, " onEdgeDragStarted edgeFlags:" + edgeFlags + " pointerId:" + pointerId);
         }
 
         @Override
         public void onEdgeTouched(int edgeFlags, int pointerId) {
             super.onEdgeTouched(edgeFlags, pointerId);
-            Log.d("pullUp", " onEdgeTouched edgeFlags:" + edgeFlags + " pointerId:" + pointerId);
+            Log.d(TAG, " onEdgeTouched edgeFlags:" + edgeFlags + " pointerId:" + pointerId);
         }
 
         @Override
         public void onViewCaptured(View capturedChild, int activePointerId) {
             super.onViewCaptured(capturedChild, activePointerId);
-            Log.d("pullUp", " onViewCaptured ");
+            Log.d(TAG, " onViewCaptured ");
             startSlide = true;
         }
 
@@ -225,7 +257,7 @@ public class PullUpDragLayout extends ViewGroup {
 
         @Override
         public void onViewReleased(View releasedChild, float xvel, float yvel) {
-            Log.w("pullUp", " onViewReleased  yvel:" + yvel + " releasedChild  " + releasedChild.getY() + " up:" + up);
+            Log.w(TAG, " onViewReleased  yvel:" + yvel + " releasedChild  " + releasedChild.getY() + " up:" + up);
             if (releasedChild == mBottomView) {
 
                 if (up) {
@@ -256,7 +288,7 @@ public class PullUpDragLayout extends ViewGroup {
 
     private void open() {
         mViewDragHelper.settleCapturedViewAt(mAutoBackTopPos.x, mAutoBackTopPos.y);
-        Log.v("pullUp", " boundTop:" + mBoundTopY + " mBoundBottomY:" + mBoundBottomY + " open ");
+        Log.v(TAG, " boundTop:" + mBoundTopY + " mBoundBottomY:" + mBoundBottomY + " open ");
         isOpen = true;
         mBottomView.setClickable(true);
         if (mOnStateListener != null) {
@@ -268,7 +300,7 @@ public class PullUpDragLayout extends ViewGroup {
     private void close() {
         mViewDragHelper.settleCapturedViewAt(mAutoBackBottomPos.x, mAutoBackBottomPos.y);
         isOpen = false;
-        Log.v("pullUp", " boundTop:" + mBoundTopY + " mBoundBottomY:" + mBoundBottomY + " close ");
+        Log.v(TAG, " boundTop:" + mBoundTopY + " mBoundBottomY:" + mBoundBottomY + " close ");
         mBottomView.setClickable(false);
         if (mOnStateListener != null) {
             mOnStateListener.close();
@@ -293,6 +325,10 @@ public class PullUpDragLayout extends ViewGroup {
      * 切换底部View
      */
     public void toggleBottomView() {
+        if (mBottomView == null) {
+            Log.e(TAG, " toggleBottomView mBottomView == null ");
+            return;
+        }
         if (isOpen) {
             mViewDragHelper.smoothSlideViewTo(mBottomView, mAutoBackBottomPos.x, mAutoBackBottomPos.y);
             if (mOnStateListener != null) {
@@ -307,6 +343,31 @@ public class PullUpDragLayout extends ViewGroup {
         invalidate();
         isOpen = !isOpen;
     }
+
+
+    /**
+     * 切换底部View
+     */
+    public void toggleBottomView(View mView) {
+        if (mView == null) {
+            Log.e(TAG, " toggleBottomView mBottomView == null ");
+            return;
+        }
+        if (isOpen) {
+            mViewDragHelper.smoothSlideViewTo(mView, mAutoBackBottomPos.x, mAutoBackBottomPos.y);
+            if (mOnStateListener != null) {
+                mOnStateListener.close();
+            }
+        } else {
+            mViewDragHelper.smoothSlideViewTo(mView, mAutoBackTopPos.x, mAutoBackTopPos.y);
+            if (mOnStateListener != null) {
+                mOnStateListener.open();
+            }
+        }
+        invalidate();
+        isOpen = !isOpen;
+    }
+
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
@@ -332,7 +393,7 @@ public class PullUpDragLayout extends ViewGroup {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if(!touch){
+        if (!touch) {
             if (event.getAction() == MotionEvent.ACTION_MOVE) {
 
                 return true;  //禁止GridView滑动
