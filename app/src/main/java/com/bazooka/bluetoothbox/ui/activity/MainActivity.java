@@ -57,6 +57,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import cn.com.swain.baselib.permission.PermissionGroup;
 
 /**
  * @author 尹晓童
@@ -66,6 +67,7 @@ import butterknife.OnClick;
  */
 public class MainActivity extends BaseActivity {
 
+    private String TAG = "bluz";
     private final int HANDLER_WHAT_SEND_DEFAULT_FLASH = 0x10;
 
     private static final String DISCONNECT_DIALOG_TAG = "MainActivity.ClosePromptDialog";
@@ -131,8 +133,24 @@ public class MainActivity extends BaseActivity {
         return R.layout.activity_main;
     }
 
+
+    @Override
+    protected void onPermissionRequest(String permission, boolean granted) {
+        super.onPermissionRequest(permission, granted);
+        if (granted && PermissionGroup.STORAGE.equalsIgnoreCase(permission)) {
+
+        } else if (PermissionGroup.LOCATION.equalsIgnoreCase(permission)) {
+            if (!granted) {
+                alert();
+            }
+        }
+    }
+
     @Override
     public void initData() {
+        setType(TYPE_MAIN);
+        requestPermission();
+
         isRegisterEventBus = false;
         EventBus.getDefault().register(this);
         initHandler();
@@ -429,7 +447,6 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    private String TAG = "bluz";
 
     /**
      * 蓝牙连接状态改变

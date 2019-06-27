@@ -41,6 +41,7 @@ import butterknife.BindView;
  */
 
 public class BluetoothSearchDialog extends BaseDialogFragment {
+    private String TAG = "bluz";
 
     private final static int MAX_RETRY_TIMES = 5;
     private final static int REQUEST_BLUETOOTH_ON = 100;
@@ -99,6 +100,7 @@ public class BluetoothSearchDialog extends BaseDialogFragment {
             @Override
             public void onConnectionStateChanged(BluetoothDevice device, int state) {
                 if (device != null) {
+                    Log.v(TAG, " OnDiscoveryListener onConnectionStateChanged : " + device.getName() + " state:" + state);
                     BluetoothDeviceBean deviceBean = findDevice(device);
                     if (deviceBean == null) {
                         deviceBean = new BluetoothDeviceBean(device, state);
@@ -156,7 +158,8 @@ public class BluetoothSearchDialog extends BaseDialogFragment {
 //                Logger.d(device.getName() + ":" + device.getAddress());
                 if (device != null) {
                     String name = device.getName();
-                    if (name != null && (name.contains("G2") || name.contains("g2")) && (!name.contains("ble"))) {
+                    if (name != null && (name.contains("G2") || name.contains("g2"))
+                            && (!name.contains("ble") && !name.contains("BLE"))) {
                         if (findDevice(device) == null) {
                             mDeviceList.add(new BluetoothDeviceBean(device,
                                     BluzDeviceFactory.ConnectionState.SPP_DISCONNECTED));

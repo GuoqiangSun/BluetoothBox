@@ -1,6 +1,12 @@
 package com.bazooka.bluetoothbox.ui.activity;
 
+import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.IBinder;
 import android.support.v4.app.Fragment;
 
 import com.actions.ibluz.manager.BluzManagerData;
@@ -14,6 +20,7 @@ import com.bazooka.bluetoothbox.listener.OnPlayerEventListener;
 import com.bazooka.bluetoothbox.service.PlayService;
 import com.bazooka.bluetoothbox.ui.fragment.BluetoothPlayControlFragment;
 import com.bazooka.bluetoothbox.ui.fragment.MusicListFragment;
+import com.bazooka.bluetoothbox.utils.PermissionReq;
 import com.bazooka.bluetoothbox.utils.SpManager;
 import com.bazooka.bluetoothbox.utils.bluetooth.BluzManagerUtils;
 
@@ -62,6 +69,43 @@ public class BluetoothMusicActivity extends MusicCommonActivity {
             if (isLastPlaying && !mPlayService.isPlaying()) {
                 mPlayService.playPause();
             }
+        } else {
+            checkPlayService();
+        }
+    }
+
+    public void checkPlayService() {
+        Intent serviceIntent = new Intent(mContext, PlayService.class);
+        startService(serviceIntent);
+        PlayServiceConnection mPlayServiceConnection = new PlayServiceConnection();
+        bindService(serviceIntent, mPlayServiceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    private class PlayServiceConnection implements ServiceConnection {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mPlayService = ((PlayService.PlayBinder) service).getService();
+            MusicCache.setPlayService(mPlayService);
+            PermissionReq.with(BluetoothMusicActivity.this)
+                    .permissions(Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    .result(new PermissionReq.Result() {
+                        @Override
+                        public void onGranted() {
+                            mPlayService.updateMusicList(null);
+                        }
+
+                        @Override
+                        public void onDenied() {
+//                            playService.quit();
+                        }
+                    })
+                    .request();
+            addViewListener();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
         }
     }
 

@@ -87,5 +87,9 @@
     <string name="select_upgrade_file">Please select the upgrade file!</string>
     <!--升级文件选择错误-->
     <string name="upgrade_file_select_error">Please select the upgraded file with a .bin suffix!</string>
+    <string name="try_again">Players are being prepared. Please try again later.</string>
+
+    <string name="permission_request_title">Permission request</string>
+    <string name="permission_request">You must allow the location permission to use this app. Please go to the settings interface and open the location permission before opening the app.</string>
 
 </resources>

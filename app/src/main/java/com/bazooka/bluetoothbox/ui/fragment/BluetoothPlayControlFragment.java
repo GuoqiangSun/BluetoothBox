@@ -1,12 +1,15 @@
 package com.bazooka.bluetoothbox.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bazooka.bluetoothbox.R;
 import com.bazooka.bluetoothbox.base.fragment.BaseFragment;
@@ -103,6 +106,10 @@ public class BluetoothPlayControlFragment extends BaseFragment {
     public void onViewClicked(View view) {
         PlayService playService = MusicCache.getPlayService();
         if (playService == null) {
+            isPlaying = false;
+            ivPlay.setImageResource(R.drawable.ic_play);
+            ((BluetoothMusicActivity) getActivity()).checkPlayService();
+            Toast.makeText(mContext, R.string.try_again, Toast.LENGTH_SHORT).show();
             return;
         }
         switch (view.getId()) {
@@ -118,15 +125,20 @@ public class BluetoothPlayControlFragment extends BaseFragment {
                 break;
             case R.id.iv_next:
                 playService.next();
+                // 模拟 停止服务
+//                Intent serviceIntent = new Intent(mContext, PlayService.class);
+//                getActivity().stopService(serviceIntent);
                 break;
             default:
                 break;
         }
     }
 
+
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void playStateChanged(BluetoothMusicActivity.MusicStateChangeEvent event) {
         isPlaying = event.isPlaying();
+        Log.v("Service", " playStateChanged " + isPlaying);
         ivPlay.setImageResource(isPlaying ? R.drawable.ic_pause : R.drawable.ic_play);
         BluetoothMusicActivity.isLastPlaying = isPlaying;
     }

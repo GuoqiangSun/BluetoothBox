@@ -292,6 +292,8 @@ public class LEDMainActivity extends BaseActivity implements SeekBar.OnSeekBarCh
     }
 
     private ImageView mLastClickImg;
+    private boolean clickSwitch = false;
+
 
     @OnClick({R.id.iv_demo, R.id.iv_switch, R.id.iv_menu, R.id.iv_back,
             R.id.iv_mode_left, R.id.iv_mode_right, R.id.iv_fm_version_yellow, R.id.iv_fm_version_purple, R.id.iv_fm_version_blue, R.id.iv_fm_version_red, R.id.iv_fm_version_orange, R.id.iv_fm_version_mazarine, R.id.iv_fm_version_green, R.id.iv_fm_version_dark_yellow, R.id.iv_fm_version_emerald})
@@ -316,6 +318,7 @@ public class LEDMainActivity extends BaseActivity implements SeekBar.OnSeekBarCh
                     hintDialog.show();
                     return;
                 }
+                clickSwitch = true;
                 if (ivSwitch.isSelected()) {
                     mBluzManagerUtils.close();
                 } else {
@@ -535,6 +538,10 @@ public class LEDMainActivity extends BaseActivity implements SeekBar.OnSeekBarCh
             char ledState = binaryResult.charAt(0);
             Log.v(BluzManagerUtils.TAG, " onCustomCommand KEY_ANS_LIGHT_CONTROL_STATE ledState:" + ledState);
             ivSwitch.setSelected(ledState == '1');
+            if (!clickSwitch && ledState != '1') {
+                mBluzManagerUtils.open();
+                mBluzManagerUtils.queryLedAndLightState();
+            }
         }
     }
 

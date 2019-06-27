@@ -25,8 +25,14 @@
         tools:replace="icon">
         <activity
             android:name=".ui.activity.MainActivity"
-            android:launchMode="singleTask" />
-        <activity android:name=".ui.activity.SplashActivity">
+            android:configChanges="locale|orientation|screenSize|layoutDirection"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.SplashActivity"
+            android:configChanges="locale|orientation|screenSize|layoutDirection"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />

@@ -16,6 +16,7 @@ import com.bazooka.bluetoothbox.bean.event.CustomCommandEvent;
 import com.bazooka.bluetoothbox.bean.event.ModeChangedEvent;
 import com.bazooka.bluetoothbox.bean.event.VolumeChangedEvent;
 import com.bazooka.bluetoothbox.cache.MusicCache;
+import com.bazooka.bluetoothbox.service.PlayService;
 import com.bazooka.bluetoothbox.utils.HexUtils;
 import com.bazooka.bluetoothbox.utils.SpManager;
 
@@ -185,9 +186,12 @@ public class BluzManagerUtils {
             Log.e(TAG, "setMode mBluzManager == null :" + mode);
             return;
         }
-        if (mode != BluzManagerData.FuncMode.A2DP && MusicCache.getPlayService() != null
-                && MusicCache.getPlayService().isPlaying()) {
-            MusicCache.getPlayService().playPause();
+        PlayService playService = MusicCache.getPlayService();
+
+        if (mode != BluzManagerData.FuncMode.A2DP
+                && playService != null
+                && playService.isPlaying()) {
+            playService.playPause();
         }
         Log.v(TAG, "setMode:" + mode);
         mBluzManager.setMode(mode);

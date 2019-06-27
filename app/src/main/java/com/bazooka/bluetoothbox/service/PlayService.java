@@ -20,11 +20,9 @@ import com.bazooka.bluetoothbox.cache.MusicCache;
 import com.bazooka.bluetoothbox.listener.EventCallback;
 import com.bazooka.bluetoothbox.listener.OnPlayerEventListener;
 import com.bazooka.bluetoothbox.receiver.NoisyAudioStreamReceiver;
-import com.bazooka.bluetoothbox.utils.GsonUtils;
 import com.bazooka.bluetoothbox.utils.MediaSessionManager;
 import com.bazooka.bluetoothbox.utils.MusicUtils;
 import com.bazooka.bluetoothbox.utils.SpManager;
-import com.orhanobut.logger.Logger;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -34,6 +32,7 @@ import java.util.List;
 
 /**
  * 音乐播放后台服务
+ *
  * @author Created by wcy on 2015/11/27.
  */
 public class PlayService extends Service implements MediaPlayer.OnCompletionListener {
@@ -107,7 +106,7 @@ public class PlayService extends Service implements MediaPlayer.OnCompletionList
         new AsyncTask<Void, Void, List<Music>>() {
             @Override
             protected List<Music> doInBackground(Void... params) {
-                    return MusicUtils.scanMusic(PlayService.this);
+                return MusicUtils.scanMusic(PlayService.this);
             }
 
             @Override
@@ -342,7 +341,7 @@ public class PlayService extends Service implements MediaPlayer.OnCompletionList
     private Runnable mPublishRunnable = new Runnable() {
         @Override
         public void run() {
-            if (isPlaying() && mListener != null) {
+            if (isPlaying() && mListener != null && mPlayer != null) {
                 mListener.onPublish(mPlayer.getCurrentPosition());
             }
             mHandler.postDelayed(this, TIME_UPDATE);
@@ -368,7 +367,7 @@ public class PlayService extends Service implements MediaPlayer.OnCompletionList
         }
     }
 
-    public void quit(){
+    public void quit() {
         stop();
         stopSelf();
     }

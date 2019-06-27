@@ -1,10 +1,15 @@
 package com.bazooka.bluetoothbox.base.activity;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 
@@ -19,8 +24,14 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
+
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import cn.com.swain.baselib.log.Tlog;
+import cn.com.swain.baselib.permission.PermissionGroup;
+import cn.com.swain.baselib.permission.PermissionHelper;
+import cn.com.swain.baselib.permission.PermissionRequest;
 
 /**
  * @author 尹晓童
@@ -97,12 +108,23 @@ public abstract class BaseActivity extends AppCompatActivity implements IActivit
         return super.onKeyDown(keyCode, event);
     }
 
+    protected static final int TYPE_MAIN = 1;
+    protected static final int TYPE_SPLASH = 2;
+    private int type;
+
+    protected void setType(int type) {
+        this.type = type;
+    }
 
     @SuppressWarnings({"unused"})
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onConnectionStateChanged(ConnectedStateChangedEvent event) {
         if (!event.isConnected()) {
-            showBluetoothDisconnectDialog();
+            if (this.type == TYPE_MAIN || this.type == TYPE_SPLASH) {
+                showBluetoothDisconnectDialog();
+            } else {
+                finish();
+            }
         }
     }
 
@@ -156,5 +178,91 @@ public abstract class BaseActivity extends AppCompatActivity implements IActivit
         super.onDestroy();
         unbinder.unbind();
         unbinder = null;
+        if (mPermissionRequest != null) {
+            mPermissionRequest.release();
+        }
     }
+
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (mPermissionRequest != null) {
+            mPermissionRequest.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    private String TAG = "abc";
+
+    private PermissionRequest mPermissionRequest;
+
+    protected void requestPermission() {
+
+        Context applicationContext = getApplicationContext();
+
+        ArrayList<String> permissions = new ArrayList<>(2);
+
+        if (!PermissionHelper.isGranted(applicationContext, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                || !PermissionHelper.isGranted(applicationContext, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+
+            permissions.add(PermissionGroup.STORAGE);
+
+        } else {
+        }
+
+        if (!PermissionHelper.isGranted(applicationContext, Manifest.permission.ACCESS_COARSE_LOCATION)
+                || !PermissionHelper.isGranted(applicationContext, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            Tlog.v(TAG, " permissions.add(PermissionGroup.LOCATION) ");
+            permissions.add(PermissionGroup.LOCATION);
+        } else {
+            Tlog.v(TAG, " has PermissionGroup.LOCATION ");
+        }
+
+        if (permissions.size() > 0) {
+
+            String[] per = permissions.toArray(new String[0]);
+
+            if (mPermissionRequest == null) {
+                Tlog.v(TAG, "HomeActivity new PermissionRequest() ");
+                mPermissionRequest = new PermissionRequest(this);
+            }
+
+            mPermissionRequest.requestPermissions(new PermissionRequest.OnPermissionFinish() {
+                @Override
+                public void onAllPermissionRequestFinish() {
+                    Tlog.v(TAG, "HomeActivity onPermissionRequestFinish() ");
+                }
+            }, new PermissionRequest.OnPermissionResult() {
+                @Override
+                public boolean onPermissionRequestResult(String permission, boolean granted) {
+                    Tlog.v(TAG, "HomeActivity onPermissionRequestResult permission :" + permission + " granted:" + granted);
+                    onPermissionRequest(permission,granted);
+                    return true;
+                }
+            }, per);
+        }
+    }
+
+
+    protected void onPermissionRequest(String permission, boolean granted){
+
+    }
+
+
+    protected void alert() {
+        AlertDialog.Builder b = new AlertDialog.Builder(this);
+        b.setTitle(R.string.permission_request_title);
+        b.setMessage(R.string.permission_request);
+        b.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+        b.setCancelable(false);
+        b.create().show();
+    }
+
+
 }
