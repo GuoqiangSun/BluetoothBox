@@ -5,6 +5,18 @@ apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao'
 
 android {
+
+
+    signingConfigs {
+        config {
+            storeFile file('..\\startai-key')
+            storePassword 'startai'
+            keyAlias = 'bazooka'
+            keyPassword 'startai'
+        }
+    }
+
+
 //    compileSdkVersion rootProject.ext.compileSdkVersion
     compileSdkVersion 27
 
@@ -24,7 +36,7 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
-
+        signingConfig signingConfigs.config
     }
 
     lintOptions {
@@ -37,14 +49,17 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-
+            signingConfig signingConfigs.config
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            signingConfig signingConfigs.config
         }
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
     }
 
     repositories {
